@@ -14,6 +14,7 @@ import { Trophy, Clock, Wifi } from "lucide-react";
 import {
   loadClientTournamentCache,
   saveClientTournamentCache,
+  standingsFromMatches,
 } from "./utils/clientCache.js";
 import { applyScheduledMatchUpdates } from "./data/matchScheduler.js";
 
@@ -80,9 +81,8 @@ export default function App() {
   const loadData = useCallback(async () => {
     try {
       setLoading(true);
-      const [matchesRes, standingsRes, statsRes, newsRes, venuesRes] = await Promise.all([
+      const [matchesRes, statsRes, newsRes, venuesRes] = await Promise.all([
         fetch("/api/worldcup/matches").then((r) => r.json()),
-        fetch("/api/worldcup/standings").then((r) => r.json()),
         fetch("/api/worldcup/stats").then((r) => r.json()),
         fetch("/api/worldcup/news").then((r) => r.json()),
         fetch("/api/worldcup/venues").then((r) => r.json()),
@@ -90,7 +90,7 @@ export default function App() {
 
       const rawMatches: Match[] = matchesRes.matches || [];
       const { matches: matchesData } = applyScheduledMatchUpdates(rawMatches);
-      const standingsData = standingsRes.standings || [];
+      const standingsData = standingsFromMatches(matchesData);
       const newsData = newsRes.news || [];
       const scorersData = statsRes.topScorers || [];
       const updatedAt = matchesRes.lastUpdated || statsRes.lastUpdated || null;
@@ -108,7 +108,7 @@ export default function App() {
       if (cached) {
         const { matches: scheduled } = applyScheduledMatchUpdates(cached.matches || []);
         setMatches(scheduled);
-        setStandings(cached.standings);
+        setStandings(standingsFromMatches(scheduled));
         setNews(cached.news);
         setStats((prev) => ({ ...prev, topScorers: cached.topScorers }));
       }
@@ -122,7 +122,7 @@ export default function App() {
     if (cached) {
       const { matches: scheduled } = applyScheduledMatchUpdates(cached.matches || []);
       setMatches(scheduled);
-      setStandings(cached.standings);
+      setStandings(standingsFromMatches(scheduled));
       setNews(cached.news);
       setStats((prev) => ({ ...prev, topScorers: cached.topScorers }));
     }

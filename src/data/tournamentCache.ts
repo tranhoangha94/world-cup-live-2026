@@ -16,7 +16,9 @@ export interface TournamentCachePayload {
   updatedAt: string;
 }
 
-export const TOURNAMENT_DATA_VERSION = 12;
+import { TOURNAMENT_DATA_VERSION } from "./dataVersion.js";
+
+export { TOURNAMENT_DATA_VERSION };
 
 const CACHE_FILES = process.env.VERCEL
   ? [path.join("/tmp", "wc2026-tournament-cache.json")]

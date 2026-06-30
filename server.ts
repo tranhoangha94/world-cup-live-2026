@@ -7,10 +7,12 @@ import express from "express";
 import path from "path";
 import dotenv from "dotenv";
 import { Match, MatchStatus, EventType, StandingGroup, TopScorer, Venue, NewsArticle } from "./src/types.js";
-import { groupStageMatches, groupStageStandings } from "./src/data/groupStage.js";
+import { groupStageMatches } from "./src/data/groupStage.js";
 import { applyScheduledMatchUpdates } from "./src/data/matchScheduler.js";
 import { loadTournamentCache, saveTournamentCache, TOURNAMENT_DATA_VERSION } from "./src/data/tournamentCache.js";
 import { computeStandingsFromMatches } from "./src/data/standingsFromMatches.js";
+import { computeTopScorersFromMatches } from "./src/data/topScorersFromMatches.js";
+import { isGroupDrawCacheValid } from "./src/data/validateGroupData.js";
 
 dotenv.config();
 
@@ -420,15 +422,15 @@ const knockoutMatches: Match[] = [
 
 let cacheMatches: Match[] = [...groupStageMatches, ...knockoutMatches];
 
-let cacheStandings: StandingGroup[] = groupStageStandings;
+let cacheStandings: StandingGroup[] = [];
+let cacheScorers: TopScorer[] = [];
 
-let cacheScorers: TopScorer[] = [
-  { rank: 1, name: "Jonathan David", team: "Canada", teamCode: "CAN", teamFlagUrl: "https://flagcdn.com/w160/ca.png", goals: 4 },
-  { rank: 2, name: "Lionel Messi", team: "Argentina", teamCode: "ARG", teamFlagUrl: "https://flagcdn.com/w160/ar.png", goals: 4 },
-  { rank: 3, name: "Kylian Mbappé", team: "Pháp", teamCode: "FRA", teamFlagUrl: "https://flagcdn.com/w160/fr.png", goals: 3 },
-  { rank: 4, name: "Vinicius Jr", team: "Brasil", teamCode: "BRA", teamFlagUrl: "https://flagcdn.com/w160/br.png", goals: 3 },
-  { rank: 5, name: "Jamal Musiala", team: "Đức", teamCode: "GER", teamFlagUrl: "https://flagcdn.com/w160/de.png", goals: 3 }
-];
+function refreshDerivedCache(): void {
+  cacheStandings = computeStandingsFromMatches(cacheMatches);
+  cacheScorers = computeTopScorersFromMatches(cacheMatches);
+}
+
+refreshDerivedCache();
 
 let cacheNews: NewsArticle[] = [
   {
@@ -481,7 +483,7 @@ const cacheVenues: Venue[] = [
 let lastCacheUpdatedAt: string | null = null;
 
 function persistTournamentCache(): void {
-  cacheStandings = computeStandingsFromMatches(cacheMatches);
+  refreshDerivedCache();
   saveTournamentCache({
     dataVersion: TOURNAMENT_DATA_VERSION,
     matches: cacheMatches,
@@ -496,20 +498,21 @@ function applyPersistedTournamentCache(): void {
   const persisted = loadTournamentCache();
   if (!persisted) return;
   if (persisted.dataVersion !== TOURNAMENT_DATA_VERSION) return;
+  if (!persisted.matches?.length || !isGroupDrawCacheValid(persisted.matches)) return;
   cacheMatches = persisted.matches;
-  cacheStandings = persisted.standings;
-  cacheNews = persisted.news;
-  cacheScorers = persisted.scorers;
+  if (persisted.news?.length) cacheNews = persisted.news;
   lastCacheUpdatedAt = persisted.updatedAt;
+  refreshDerivedCache();
 }
 
 function refreshScheduleAndPersist(): void {
   const { matches, changed } = applyScheduledMatchUpdates(cacheMatches);
-  cacheStandings = computeStandingsFromMatches(matches);
   if (changed) {
     cacheMatches = matches;
     lastCacheUpdatedAt = new Date().toISOString();
     persistTournamentCache();
+  } else {
+    refreshDerivedCache();
   }
 }
 
@@ -533,16 +536,18 @@ app.get("/api/worldcup/matches", (req, res) => {
 
 // Get standigs
 app.get("/api/worldcup/standings", (req, res) => {
-  res.json({ standings: cacheStandings });
+  refreshScheduleAndPersist();
+  res.json({ standings: computeStandingsFromMatches(cacheMatches) });
 });
 
 // Get league statistics & top scorers
 app.get("/api/worldcup/stats", (req, res) => {
+  refreshScheduleAndPersist();
   res.json({
     avgGoals: 2.8,
     yellowCards: 14,
     avgAttendance: 64200,
-    topScorers: cacheScorers,
+    topScorers: computeTopScorersFromMatches(cacheMatches),
     lastUpdated: lastCacheUpdatedAt,
   });
 });
