@@ -38,7 +38,19 @@ function calendarSortKey(calendar: string): number {
   return y * 10000 + m * 100 + d;
 }
 
-/** Group matches by ICT calendar day (not raw label text). */
+/** Combined ICT kickoff key for sorting (date + time). */
+export function matchICTSortKey(match: Pick<Match, "date" | "time">): number {
+  const calendar = extractCalendarDate(match.date);
+  const dateKey = calendar ? calendarSortKey(calendar) : 0;
+  return dateKey * 10000 + kickoffSortKey(match.time);
+}
+
+/** Sort matches newest kickoff first (ICT). */
+export function sortMatchesNewestFirst(matches: Match[]): Match[] {
+  return [...matches].sort((a, b) => matchICTSortKey(b) - matchICTSortKey(a));
+}
+
+/** Group matches by ICT calendar day — newest day first, latest kickoff first within each day. */
 export function groupMatchesByCalendarDate(
   matches: Match[]
 ): { key: string; label: string; matches: Match[] }[] {
@@ -53,7 +65,7 @@ export function groupMatchesByCalendarDate(
   }
 
   return [...groups.entries()]
-    .sort(([a], [b]) => calendarSortKey(a) - calendarSortKey(b))
+    .sort(([a], [b]) => calendarSortKey(b) - calendarSortKey(a))
     .map(([key, { labels, matches: groupMatches }]) => ({
       key,
       label:
@@ -61,7 +73,7 @@ export function groupMatchesByCalendarDate(
         labels.find((l) => l.includes("Hôm qua")) ??
         labels.find((l) => l.includes("Ngày mai")) ??
         labels[0],
-      matches: [...groupMatches].sort((a, b) => kickoffSortKey(a.time) - kickoffSortKey(b.time)),
+      matches: sortMatchesNewestFirst(groupMatches),
     }));
 }
 

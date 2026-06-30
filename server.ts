@@ -32,12 +32,10 @@ const knockoutMatches: Match[] = [
     status: MatchStatus.FINISHED,
     round: "Vòng 32",
     date: "Hôm qua, 29/06/2026",
-    time: "20:00",
-    venue: "Sân vận động BC Place, Vancouver",
+    time: "01:00",
+    venue: "Sân vận động SoFi, Los Angeles",
     events: [
-      { minute: "34'", type: EventType.YELLOW_CARD, player: "Teboho Mokoena", team: "home", detail: "Phạm lỗi chiến thuật" },
-      { minute: "73'", type: EventType.GOAL, player: "Jonathan David", team: "away", detail: "Sút bồi cận thành từ đường chuyền của Alphonso Davies" },
-      { minute: "85'", type: EventType.SUB, player: "Cyle Larin", playerOut: "Jonathan David", team: "away" }
+      { minute: "90'", type: EventType.GOAL, player: "Stephen Eustáquio", team: "away", detail: "Bàn thắng ở phút bù giờ đưa Canada vào vòng 16" },
     ],
     stats: {
       possession: { home: 42, away: 58 },
@@ -46,9 +44,9 @@ const knockoutMatches: Match[] = [
       passAccuracy: { home: 78, away: 86 }
     },
     lineups: [
-      { name: "Jonathan David", position: "ST", team: "away", rating: 8.3 },
-      { name: "Alphonso Davies", position: "LB", team: "away", rating: 7.9 },
-      { name: "Teboho Mokoena", position: "CM", team: "home", rating: 6.8 }
+      { name: "Stephen Eustáquio", position: "CM", team: "away", rating: 8.2 },
+      { name: "Alphonso Davies", position: "LB", team: "away", rating: 7.8 },
+      { name: "Jonathan David", position: "ST", team: "away", rating: 7.5 },
     ]
   },
   {
@@ -63,10 +61,10 @@ const knockoutMatches: Match[] = [
     round: "Vòng 32",
     date: "Hôm nay, 30/06/2026",
     time: "02:00",
-    venue: "Sân vận động MetLife, New York",
+    venue: "Sân vận động Akron, Guadalajara",
     events: [
-      { minute: "44'", type: EventType.GOAL, player: "Memphis Depay", team: "home", detail: "Cú sút phạt hàng rào đẳng cấp" },
-      { minute: "68'", type: EventType.GOAL, player: "Hakim Ziyech", team: "away", detail: "Sút chéo góc hạ gục thủ thành Verbruggen" },
+      { minute: "19'", type: EventType.GOAL, player: "Youssef En-Nesyri", team: "away", detail: "Bàn mở tỷ số cho Maroc" },
+      { minute: "74'", type: EventType.GOAL, player: "Denzel Dumfries", team: "home", detail: "Cân bằng tỷ số cho Hà Lan" },
       { minute: "120'", type: EventType.SUB, player: "Yassine Bounou", playerOut: "Munir Mohamedi", team: "away", detail: "Chuyên gia bắt luân lưu" }
     ],
     stats: {
@@ -77,8 +75,8 @@ const knockoutMatches: Match[] = [
     },
     lineups: [
       { name: "Yassine Bounou", position: "GK", team: "away", rating: 8.5 },
-      { name: "Hakim Ziyech", position: "RW", team: "away", rating: 7.8 },
-      { name: "Cody Gakpo", position: "LW", team: "home", rating: 7.2 }
+      { name: "Denzel Dumfries", position: "RB", team: "home", rating: 7.9 },
+      { name: "Youssef En-Nesyri", position: "ST", team: "away", rating: 7.6 },
     ]
   },
   {
