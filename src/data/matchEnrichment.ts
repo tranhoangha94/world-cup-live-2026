@@ -69,6 +69,8 @@ const SQUADS: Record<string, SquadPlayer[]> = {
   ],
   br: [
     { name: "Vinicius Jr", position: "LW" },
+    { name: "Gabriel Martinelli", position: "LW" },
+    { name: "Bruno Guimarães", position: "CM" },
     { name: "Rodrygo", position: "RW" },
     { name: "Endrick", position: "ST" },
     { name: "Casemiro", position: "CDM" },
@@ -83,6 +85,7 @@ const SQUADS: Record<string, SquadPlayer[]> = {
   ],
   jp: [
     { name: "Kaoru Mitoma", position: "LW" },
+    { name: "Kaishu Sano", position: "ST" },
     { name: "Takefusa Kubo", position: "RW" },
     { name: "Daizen Maeda", position: "ST" },
     { name: "Wataru Endo", position: "CDM" },
@@ -297,6 +300,13 @@ const SQUADS: Record<string, SquadPlayer[]> = {
     { name: "Achraf Hakimi", position: "RB" },
     { name: "Sofyan Amrabat", position: "CDM" },
     { name: "Yassine Bounou", position: "GK" },
+  ],
+  ht: [
+    { name: "Frantzdy Pierrot", position: "ST" },
+    { name: "Derrick Etienne", position: "LW" },
+    { name: "Johny Placide", position: "GK" },
+    { name: "Zachary Herivaux", position: "CM" },
+    { name: "Derrick Etienne Jr.", position: "RW" },
   ],
   dk: [
     { name: "Christian Eriksen", position: "CAM" },

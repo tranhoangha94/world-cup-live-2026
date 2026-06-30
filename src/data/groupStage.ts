@@ -54,6 +54,7 @@ const TEAMS = {
   ven: team({ name: "Venezuela", code: "ve" }),
   bol: team({ name: "Bolivia", code: "bo" }),
   mar: team({ name: "Maroc", code: "ma" }),
+  hti: team({ name: "Haiti", code: "ht" }),
   den: team({ name: "Đan Mạch", code: "dk" }),
   pol: team({ name: "Ba Lan", code: "pl" }),
   nzl: team({ name: "New Zealand", code: "nz" }),
@@ -170,12 +171,12 @@ const groupBMatches = buildGroup(1, "b", "Bảng B", [
 ]);
 
 const groupCMatches = buildGroup(2, "c", "Bảng C", [
-  [TEAMS.bra, TEAMS.aut, 2, 0],
-  [TEAMS.ger, TEAMS.jpn, 2, 1],
-  [TEAMS.jpn, TEAMS.bra, 1, 2],
-  [TEAMS.ger, TEAMS.aut, 2, 1],
-  [TEAMS.jpn, TEAMS.ger, 2, 1],
-  [TEAMS.bra, TEAMS.jpn, 3, 1],
+  [TEAMS.bra, TEAMS.mar, 1, 1],
+  [TEAMS.sco, TEAMS.hti, 1, 0],
+  [TEAMS.mar, TEAMS.sco, 1, 0],
+  [TEAMS.bra, TEAMS.hti, 3, 0],
+  [TEAMS.bra, TEAMS.sco, 3, 0],
+  [TEAMS.mar, TEAMS.hti, 4, 2],
 ]);
 
 const groupDMatches = buildGroup(3, "d", "Bảng D", [
@@ -197,12 +198,12 @@ const groupEMatches = buildGroup(4, "e", "Bảng E", [
 ]);
 
 const groupFMatches = buildGroup(5, "f", "Bảng F", [
-  [TEAMS.eng, TEAMS.sco, 2, 0],
-  [TEAMS.cod, TEAMS.bih, 1, 0],
-  [TEAMS.eng, TEAMS.cod, 3, 1],
-  [TEAMS.bih, TEAMS.sco, 2, 1],
-  [TEAMS.eng, TEAMS.bih, 1, 0],
-  [TEAMS.sco, TEAMS.cod, 0, 2],
+  [TEAMS.jpn, TEAMS.ned, 2, 2],
+  [TEAMS.swe, TEAMS.tun, 5, 1],
+  [TEAMS.ned, TEAMS.swe, 5, 1],
+  [TEAMS.jpn, TEAMS.tun, 4, 0],
+  [TEAMS.jpn, TEAMS.swe, 1, 1],
+  [TEAMS.tun, TEAMS.ned, 1, 3],
 ]);
 
 const groupGMatches = buildGroup(6, "g", "Bảng G", [

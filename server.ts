@@ -168,24 +168,26 @@ const knockoutMatches: Match[] = [
     awayScore: 1,
     status: MatchStatus.FINISHED,
     round: "Vòng 32",
-    date: "Hôm nay, 30/06/2026",
-    time: "10:00",
+    date: "Thứ Hai, 30/06/2026",
+    time: "01:00",
     venue: "Sân vận động NRG, Houston",
     events: [
-      { minute: "15'", type: EventType.GOAL, player: "Vinicius Jr", team: "home", detail: "Đá phạt đền thành công" },
-      { minute: "49'", type: EventType.GOAL, player: "Kaoru Mitoma", team: "away", detail: "Sút chéo góc quyết đoán sau pha kiến tạo của Endo" },
-      { minute: "78'", type: EventType.GOAL, player: "Rodrygo", team: "home", detail: "Đệm bóng cận thành chuẩn xác từ quả tạt của Savinho" }
+      { minute: "29'", type: EventType.GOAL, player: "Kaishu Sano", team: "away", detail: "Sút xa đẹp mắt từ ngoài vòng cung — Nhật Bản dẫn trước" },
+      { minute: "56'", type: EventType.GOAL, player: "Casemiro", team: "home", detail: "Đánh đầu cận thành cân bằng tỷ số" },
+      { minute: "67'", type: EventType.YELLOW_CARD, player: "Wataru Endo", team: "away", detail: "Phạm lỗi chiến thuật" },
+      { minute: "81'", type: EventType.YELLOW_CARD, player: "Casemiro", team: "home", detail: "Kéo áo cầu thủ đối phương" },
+      { minute: "90+6'", type: EventType.GOAL, player: "Gabriel Martinelli", team: "home", detail: "Sút chéo góc từ đường chuyền của Bruno Guimarães — bàn thắng quyết định" },
     ],
     stats: {
-      possession: { home: 58, away: 42 },
-      shots: { home: 14, away: 9 },
-      shotsOnTarget: { home: 6, away: 4 },
-      passAccuracy: { home: 87, away: 80 }
+      possession: { home: 60, away: 40 },
+      shots: { home: 20, away: 5 },
+      shotsOnTarget: { home: 7, away: 2 },
+      passAccuracy: { home: 92, away: 86 }
     },
     lineups: [
-      { name: "Vinicius Jr", position: "LW", team: "home", rating: 8.2 },
-      { name: "Rodrygo", position: "ST", team: "home", rating: 7.9 },
-      { name: "Kaoru Mitoma", position: "LW", team: "away", rating: 7.6 }
+      { name: "Gabriel Martinelli", position: "LW", team: "home", rating: 8.4 },
+      { name: "Casemiro", position: "CDM", team: "home", rating: 8.1 },
+      { name: "Kaishu Sano", position: "ST", team: "away", rating: 7.5 },
     ]
   },
   {
