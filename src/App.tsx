@@ -11,12 +11,10 @@ import MatchDetailTab from "./components/MatchDetailTab.js";
 import StandingsTab from "./components/StandingsTab.js";
 import NewsTab from "./components/NewsTab.js";
 import { Trophy, Clock, Wifi } from "lucide-react";
-import {
-  loadClientTournamentCache,
-  saveClientTournamentCache,
-  standingsFromMatches,
-} from "./utils/clientCache.js";
+import { saveClientTournamentCache, standingsFromMatches } from "./utils/clientCache.js";
 import { applyScheduledMatchUpdates } from "./data/matchScheduler.js";
+import { loadTournamentState, baseTournamentMatches } from "./data/tournamentData.js";
+import { computeTopScorersFromMatches } from "./data/topScorersFromMatches.js";
 
 type ActiveTab = "scores" | "bracket" | "standings" | "news" | "detail";
 
@@ -31,28 +29,20 @@ export default function App() {
     avgGoals: 2.8,
     yellowCards: 14,
     avgAttendance: 64200,
-    topScorers: []
+    topScorers: [],
   });
   const [news, setNews] = useState<NewsArticle[]>([]);
   const [venues, setVenues] = useState<Venue[]>([]);
-
   const [loading, setLoading] = useState(true);
   const [time, setTime] = useState("");
 
-  const persistClientCache = useCallback((
-    matchesData: Match[],
-    standingsData: StandingGroup[],
-    newsData: NewsArticle[],
-    scorersData: TopScorer[],
-    updatedAt: string | null
-  ) => {
-    saveClientTournamentCache({
-      matches: matchesData,
-      standings: standingsData,
-      news: newsData,
-      topScorers: scorersData,
-      lastUpdated: updatedAt,
-    });
+  const applyLiveState = useCallback((nextMatches: Match[]) => {
+    setMatches(nextMatches);
+    setStandings(standingsFromMatches(nextMatches));
+    setStats((prev) => ({
+      ...prev,
+      topScorers: computeTopScorersFromMatches(nextMatches),
+    }));
   }, []);
 
   useEffect(() => {
@@ -65,69 +55,37 @@ export default function App() {
     return () => clearInterval(clockTimer);
   }, []);
 
-  // Cập nhật trạng thái trận từ lịch đấu (không gọi API)
   useEffect(() => {
-    const applySchedule = () => {
+    const boot = loadTournamentState();
+    applyLiveState(boot.matches);
+    setNews(boot.news);
+    setVenues(boot.venues);
+    setStats((prev) => ({ ...prev, ...boot.stats, topScorers: boot.topScorers }));
+    setLoading(false);
+
+    saveClientTournamentCache({
+      matches: boot.matches,
+      news: boot.news,
+      topScorers: boot.topScorers,
+      lastUpdated: new Date().toISOString(),
+    });
+  }, [applyLiveState]);
+
+  useEffect(() => {
+    const tick = () => {
       setMatches((prev) => {
-        if (prev.length === 0) return prev;
-        const { matches: next, changed } = applyScheduledMatchUpdates(prev);
+        const source = prev.length > 0 ? prev : baseTournamentMatches;
+        const { matches: next, changed } = applyScheduledMatchUpdates(source);
+        if (changed) {
+          setStandings(standingsFromMatches(next));
+          setStats((s) => ({ ...s, topScorers: computeTopScorersFromMatches(next) }));
+        }
         return changed ? next : prev;
       });
     };
-    const scheduleTimer = setInterval(applySchedule, 60_000);
+    const scheduleTimer = setInterval(tick, 60_000);
     return () => clearInterval(scheduleTimer);
   }, []);
-
-  const loadData = useCallback(async () => {
-    try {
-      setLoading(true);
-      const [matchesRes, statsRes, newsRes, venuesRes] = await Promise.all([
-        fetch("/api/worldcup/matches").then((r) => r.json()),
-        fetch("/api/worldcup/stats").then((r) => r.json()),
-        fetch("/api/worldcup/news").then((r) => r.json()),
-        fetch("/api/worldcup/venues").then((r) => r.json()),
-      ]);
-
-      const rawMatches: Match[] = matchesRes.matches || [];
-      const { matches: matchesData } = applyScheduledMatchUpdates(rawMatches);
-      const standingsData = standingsFromMatches(matchesData);
-      const newsData = newsRes.news || [];
-      const scorersData = statsRes.topScorers || [];
-      const updatedAt = matchesRes.lastUpdated || statsRes.lastUpdated || null;
-
-      setMatches(matchesData);
-      setStandings(standingsData);
-      setStats(statsRes || { avgGoals: 2.8, yellowCards: 14, avgAttendance: 64200, topScorers: [] });
-      setNews(newsData);
-      setVenues(venuesRes.venues || []);
-
-      persistClientCache(matchesData, standingsData, newsData, scorersData, updatedAt);
-    } catch (error) {
-      console.error("Failed to load World Cup data from server API, using local cache:", error);
-      const cached = loadClientTournamentCache();
-      if (cached) {
-        const { matches: scheduled } = applyScheduledMatchUpdates(cached.matches || []);
-        setMatches(scheduled);
-        setStandings(standingsFromMatches(scheduled));
-        setNews(cached.news);
-        setStats((prev) => ({ ...prev, topScorers: cached.topScorers }));
-      }
-    } finally {
-      setLoading(false);
-    }
-  }, [persistClientCache]);
-
-  useEffect(() => {
-    const cached = loadClientTournamentCache();
-    if (cached) {
-      const { matches: scheduled } = applyScheduledMatchUpdates(cached.matches || []);
-      setMatches(scheduled);
-      setStandings(standingsFromMatches(scheduled));
-      setNews(cached.news);
-      setStats((prev) => ({ ...prev, topScorers: cached.topScorers }));
-    }
-    loadData();
-  }, [loadData]);
 
   const handleSelectMatch = (match: Match) => {
     setPreviousTab(activeTab);
@@ -208,7 +166,7 @@ export default function App() {
               <div className="absolute inset-0 rounded-full border-4 border-t-[#c3f400] animate-spin"></div>
             </div>
             <p className="text-on-surface-variant text-sm font-body-md animate-pulse">
-              Đang kết xuất dữ liệu World Cup chính xác...
+              Đang tải dữ liệu World Cup...
             </p>
           </div>
         ) : (
@@ -241,7 +199,7 @@ export default function App() {
 
       <footer className="border-t border-white/5 bg-surface/50 py-6 px-4 text-center text-xs text-on-surface-variant font-body-sm">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <p>© 2026 FIFA World Cup Live Scoreboard. Tự động cập nhật sau mỗi trận đấu (giờ VN).</p>
+          <p>© 2026 FIFA World Cup Live Scoreboard. Dữ liệu openfootball — cập nhật theo giờ VN (ICT).</p>
           <span className="font-label-caps text-[10px] font-bold">MÚI GIỜ: VIỆT NAM (ICT - GMT+7)</span>
         </div>
       </footer>
