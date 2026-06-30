@@ -31,11 +31,11 @@ const knockoutMatches: Match[] = [
     awayScore: 1,
     status: MatchStatus.FINISHED,
     round: "Vòng 32",
-    date: "Hôm qua, 29/06/2026",
-    time: "01:00",
+    date: "29/06/2026",
+    time: "02:00",
     venue: "Sân vận động SoFi, Los Angeles",
     events: [
-      { minute: "90'", type: EventType.GOAL, player: "Stephen Eustáquio", team: "away", detail: "Bàn thắng ở phút bù giờ đưa Canada vào vòng 16" },
+      { minute: "90+2'", type: EventType.GOAL, player: "Stephan Eustáquio", team: "away", detail: "Bàn thắng ở phút bù giờ đưa Canada vào vòng 16" },
     ],
     stats: {
       possession: { home: 42, away: 58 },
@@ -59,12 +59,12 @@ const knockoutMatches: Match[] = [
     awayPens: 3,
     status: MatchStatus.FINISHED,
     round: "Vòng 32",
-    date: "Hôm nay, 30/06/2026",
-    time: "02:00",
+    date: "30/06/2026",
+    time: "08:00",
     venue: "Sân vận động Akron, Guadalajara",
     events: [
-      { minute: "19'", type: EventType.GOAL, player: "Youssef En-Nesyri", team: "away", detail: "Bàn mở tỷ số cho Maroc" },
-      { minute: "74'", type: EventType.GOAL, player: "Denzel Dumfries", team: "home", detail: "Cân bằng tỷ số cho Hà Lan" },
+      { minute: "72'", type: EventType.GOAL, player: "Cody Gakpo", team: "home", detail: "Cân bằng tỷ số cho Hà Lan" },
+      { minute: "90+1'", type: EventType.GOAL, player: "Issa Diop", team: "away", detail: "Phút bù giờ — Maroc cân bằng tỷ số" },
       { minute: "120'", type: EventType.SUB, player: "Yassine Bounou", playerOut: "Munir Mohamedi", team: "away", detail: "Chuyên gia bắt luân lưu" }
     ],
     stats: {
@@ -75,8 +75,8 @@ const knockoutMatches: Match[] = [
     },
     lineups: [
       { name: "Yassine Bounou", position: "GK", team: "away", rating: 8.5 },
-      { name: "Denzel Dumfries", position: "RB", team: "home", rating: 7.9 },
-      { name: "Youssef En-Nesyri", position: "ST", team: "away", rating: 7.6 },
+      { name: "Cody Gakpo", position: "LW", team: "home", rating: 7.9 },
+      { name: "Issa Diop", position: "CB", team: "away", rating: 7.6 },
     ]
   },
   {
@@ -89,12 +89,12 @@ const knockoutMatches: Match[] = [
     awayPens: 4,
     status: MatchStatus.FINISHED,
     round: "Vòng 32",
-    date: "Hôm nay, 30/06/2026",
-    time: "06:00",
-    venue: "Sân vận động SoFi, Los Angeles",
+    date: "30/06/2026",
+    time: "03:30",
+    venue: "Sân vận động Gillette, Boston",
     events: [
-      { minute: "29'", type: EventType.GOAL, player: "Jamal Musiala", team: "home", detail: "Solo đột phá vòng cấm rồi dứt điểm gọn gàng" },
-      { minute: "52'", type: EventType.GOAL, player: "Julio Enciso", team: "away", detail: "Sút xa cầu hóng từ cự ly 25m đưa bóng găm thẳng góc chữ A" }
+      { minute: "42'", type: EventType.GOAL, player: "Julio Enciso", team: "away", detail: "Paraguay dẫn trước sau pha dứt điểm của Enciso" },
+      { minute: "54'", type: EventType.GOAL, player: "Kai Havertz", team: "home", detail: "Havertz cân bằng tỷ số cho Đức" }
     ],
     stats: {
       possession: { home: 65, away: 35 },
@@ -104,7 +104,7 @@ const knockoutMatches: Match[] = [
     },
     lineups: [
       { name: "Julio Enciso", position: "CAM", team: "away", rating: 8.1 },
-      { name: "Jamal Musiala", position: "CAM", team: "home", rating: 8.4 },
+      { name: "Kai Havertz", position: "ST", team: "home", rating: 8.4 },
       { name: "Florian Wirtz", position: "LW", team: "home", rating: 7.5 }
     ]
   },
@@ -114,9 +114,9 @@ const knockoutMatches: Match[] = [
     awayTeam: { name: "Thụy Điển", code: "SWE", flagUrl: "https://flagcdn.com/w160/se.png" },
     status: MatchStatus.UPCOMING,
     round: "Vòng 32",
-    date: "Thứ Tư, 01/07/2026",
+    date: "01/07/2026",
     time: "04:00",
-    venue: "Sân vận động Mercedes-Benz, Atlanta"
+    venue: "Sân vận động MetLife, New York"
   },
   {
     id: "r32_5",
@@ -124,7 +124,7 @@ const knockoutMatches: Match[] = [
     awayTeam: { name: "Sénégal", code: "SEN", flagUrl: "https://flagcdn.com/w160/sn.png" },
     status: MatchStatus.UPCOMING,
     round: "Vòng 32",
-    date: "Thứ Năm, 02/07/2026",
+    date: "02/07/2026",
     time: "03:00",
     venue: "Sân vận động Lumen Field, Seattle"
   },
@@ -134,9 +134,9 @@ const knockoutMatches: Match[] = [
     awayTeam: { name: "Bosnia và Herzegovina", code: "BIH", flagUrl: "https://flagcdn.com/w160/ba.png" },
     status: MatchStatus.UPCOMING,
     round: "Vòng 32",
-    date: "Thứ Năm, 02/07/2026",
+    date: "02/07/2026",
     time: "07:00",
-    venue: "Sân vận động Arrowhead, Kansas City"
+    venue: "Sân vận động Levi's, Santa Clara"
   },
   {
     id: "r32_7",
@@ -144,9 +144,9 @@ const knockoutMatches: Match[] = [
     awayTeam: { name: "Áo", code: "AUT", flagUrl: "https://flagcdn.com/w160/at.png" },
     status: MatchStatus.UPCOMING,
     round: "Vòng 32",
-    date: "Thứ Sáu, 03/07/2026",
+    date: "03/07/2026",
     time: "02:00",
-    venue: "Sân vận động Hard Rock, Miami"
+    venue: "Sân vận động SoFi, Los Angeles"
   },
   {
     id: "r32_8",
@@ -154,9 +154,9 @@ const knockoutMatches: Match[] = [
     awayTeam: { name: "Croatia", code: "CRO", flagUrl: "https://flagcdn.com/w160/hr.png" },
     status: MatchStatus.UPCOMING,
     round: "Vòng 32",
-    date: "Thứ Sáu, 03/07/2026",
+    date: "03/07/2026",
     time: "06:00",
-    venue: "Sân vận động Gillette, Boston"
+    venue: "Sân vận động BMO Field, Toronto"
   },
   {
     id: "r32_9",
@@ -166,7 +166,7 @@ const knockoutMatches: Match[] = [
     awayScore: 1,
     status: MatchStatus.FINISHED,
     round: "Vòng 32",
-    date: "Hôm nay, 30/06/2026",
+    date: "30/06/2026",
     time: "00:00",
     venue: "Sân vận động NRG, Houston",
     events: [
@@ -174,7 +174,7 @@ const knockoutMatches: Match[] = [
       { minute: "56'", type: EventType.GOAL, player: "Casemiro", team: "home", detail: "Đánh đầu cận thành cân bằng tỷ số" },
       { minute: "67'", type: EventType.YELLOW_CARD, player: "Wataru Endo", team: "away", detail: "Phạm lỗi chiến thuật" },
       { minute: "81'", type: EventType.YELLOW_CARD, player: "Casemiro", team: "home", detail: "Kéo áo cầu thủ đối phương" },
-      { minute: "90+6'", type: EventType.GOAL, player: "Gabriel Martinelli", team: "home", detail: "Sút chéo góc từ đường chuyền của Bruno Guimarães — bàn thắng quyết định" },
+      { minute: "90+5'", type: EventType.GOAL, player: "Gabriel Martinelli", team: "home", detail: "Sút chéo góc từ đường chuyền của Bruno Guimarães — bàn thắng quyết định" },
     ],
     stats: {
       possession: { home: 60, away: 40 },
@@ -192,29 +192,11 @@ const knockoutMatches: Match[] = [
     id: "r32_10",
     homeTeam: { name: "Bờ Biển Ngà", code: "CIV", flagUrl: "https://flagcdn.com/w160/ci.png" },
     awayTeam: { name: "Na Uy", code: "NOR", flagUrl: "https://flagcdn.com/w160/no.png" },
-    homeScore: 1,
-    awayScore: 2,
-    status: MatchStatus.FINISHED,
+    status: MatchStatus.UPCOMING,
     round: "Vòng 32",
-    date: "Thứ Tư, 01/07/2026",
+    date: "01/07/2026",
     time: "00:00",
-    venue: "Sân vận động Hard Rock, Miami",
-    events: [
-      { minute: "24'", type: EventType.GOAL, player: "Erling Haaland", team: "away", detail: "Dứt điểm cận thành mở tỷ số" },
-      { minute: "58'", type: EventType.GOAL, player: "Erling Haaland", team: "away", detail: "Lập cú đúp — Na Uy dẫn 2-0" },
-      { minute: "71'", type: EventType.GOAL, player: "Simon Adingra", team: "home", detail: "Rút ngắn tỷ số cho Bờ Biển Ngà" },
-    ],
-    stats: {
-      possession: { home: 44, away: 56 },
-      shots: { home: 9, away: 14 },
-      shotsOnTarget: { home: 3, away: 7 },
-      passAccuracy: { home: 81, away: 87 }
-    },
-    lineups: [
-      { name: "Erling Haaland", position: "ST", team: "away", rating: 8.7 },
-      { name: "Simon Adingra", position: "LW", team: "home", rating: 7.4 },
-      { name: "Nicolas Pépé", position: "RW", team: "home", rating: 7.1 },
-    ]
+    venue: "Sân vận động AT&T, Dallas"
   },
   {
     id: "r32_11",
@@ -222,7 +204,7 @@ const knockoutMatches: Match[] = [
     awayTeam: { name: "Ecuador", code: "ECU", flagUrl: "https://flagcdn.com/w160/ec.png" },
     status: MatchStatus.UPCOMING,
     round: "Vòng 32",
-    date: "Thứ Tư, 01/07/2026",
+    date: "01/07/2026",
     time: "08:00",
     venue: "Sân vận động Azteca, Mexico City"
   },
@@ -232,9 +214,9 @@ const knockoutMatches: Match[] = [
     awayTeam: { name: "CHDC Congo", code: "COD", flagUrl: "https://flagcdn.com/w160/cd.png" },
     status: MatchStatus.UPCOMING,
     round: "Vòng 32",
-    date: "Thứ Tư, 01/07/2026",
+    date: "01/07/2026",
     time: "23:00",
-    venue: "Sân vận động Lincoln Financial, Philadelphia"
+    venue: "Sân vận động Mercedes-Benz, Atlanta"
   },
   {
     id: "r32_13",
@@ -242,7 +224,7 @@ const knockoutMatches: Match[] = [
     awayTeam: { name: "Algérie", code: "ALG", flagUrl: "https://flagcdn.com/w160/dz.png" },
     status: MatchStatus.UPCOMING,
     round: "Vòng 32",
-    date: "Thứ Sáu, 03/07/2026",
+    date: "03/07/2026",
     time: "10:00",
     venue: "Sân vận động BC Place, Vancouver"
   },
@@ -252,9 +234,9 @@ const knockoutMatches: Match[] = [
     awayTeam: { name: "Ghana", code: "GHA", flagUrl: "https://flagcdn.com/w160/gh.png" },
     status: MatchStatus.UPCOMING,
     round: "Vòng 32",
-    date: "Thứ Bảy, 04/07/2026",
+    date: "04/07/2026",
     time: "08:30",
-    venue: "Sân vận động Mercedes-Benz, Atlanta"
+    venue: "Sân vận động Arrowhead, Kansas City"
   },
   {
     id: "r32_15",
@@ -262,9 +244,9 @@ const knockoutMatches: Match[] = [
     awayTeam: { name: "Ai Cập", code: "EGY", flagUrl: "https://flagcdn.com/w160/eg.png" },
     status: MatchStatus.UPCOMING,
     round: "Vòng 32",
-    date: "Thứ Bảy, 04/07/2026",
+    date: "04/07/2026",
     time: "01:00",
-    venue: "Sân vận động MetLife, New York"
+    venue: "Sân vận động AT&T, Dallas"
   },
   {
     id: "r32_16",
@@ -272,9 +254,9 @@ const knockoutMatches: Match[] = [
     awayTeam: { name: "Cabo Verde", code: "CPV", flagUrl: "https://flagcdn.com/w160/cv.png" },
     status: MatchStatus.UPCOMING,
     round: "Vòng 32",
-    date: "Thứ Bảy, 04/07/2026",
+    date: "04/07/2026",
     time: "05:00",
-    venue: "Sân vận động SoFi, Los Angeles"
+    venue: "Sân vận động Hard Rock, Miami"
   },
 
   // --- VÒNG 16 ĐỘI (ROUND OF 16) ---

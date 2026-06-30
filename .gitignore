@@ -8,3 +8,4 @@ coverage/
 !.env.example
 .cache/
 source-from-gemini.json
+source-from-openfootball.json
