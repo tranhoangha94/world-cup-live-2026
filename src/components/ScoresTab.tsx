@@ -3,10 +3,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Match, MatchStatus, TopScorer, Venue } from "../types.js";
-import { Search, Calendar, ChevronLeft, ChevronRight, Bell, Trophy, MapPin, Clock } from "lucide-react";
-import { formatBroadcastTimeVN, groupMatchesByCalendarDate } from "../utils/matchTime.js";
+import { Search, Calendar, ChevronLeft, ChevronRight, Trophy, MapPin, Clock } from "lucide-react";
+import {
+  formatBroadcastTimeVN,
+  groupMatchesByCalendarDate,
+  calendarToInputValue,
+  inputValueToCalendar,
+  resolveDefaultCalendarDate,
+  sortCalendarKeysAsc,
+} from "../utils/matchTime.js";
 
 interface ScoresTabProps {
   matches: Match[];
@@ -27,8 +34,8 @@ export default function ScoresTab({
   onSelectMatch,
 }: ScoresTabProps) {
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedDateKey, setSelectedDateKey] = useState<string | null>(null);
 
-  // Filter matches based on search
   const filteredMatches = matches.filter(
     (m) =>
       m.homeTeam.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -36,8 +43,41 @@ export default function ScoresTab({
       m.venue.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Group by ICT calendar date (dd/mm/yyyy), not raw label text
   const dateGroups = groupMatchesByCalendarDate(filteredMatches);
+  const sortedDateKeys = useMemo(
+    () => sortCalendarKeysAsc(dateGroups.map((g) => g.key)),
+    [dateGroups]
+  );
+
+  useEffect(() => {
+    if (dateGroups.length === 0) {
+      setSelectedDateKey(null);
+      return;
+    }
+    setSelectedDateKey((current) => {
+      if (current && dateGroups.some((g) => g.key === current)) return current;
+      return resolveDefaultCalendarDate(sortedDateKeys);
+    });
+  }, [dateGroups, sortedDateKeys]);
+
+  const selectedGroup = dateGroups.find((g) => g.key === selectedDateKey) ?? null;
+  const selectedIndex = selectedDateKey ? sortedDateKeys.indexOf(selectedDateKey) : -1;
+  const canGoPrev = selectedIndex > 0;
+  const canGoNext = selectedIndex >= 0 && selectedIndex < sortedDateKeys.length - 1;
+
+  const goPrevDay = () => {
+    if (canGoPrev) setSelectedDateKey(sortedDateKeys[selectedIndex - 1]);
+  };
+
+  const goNextDay = () => {
+    if (canGoNext) setSelectedDateKey(sortedDateKeys[selectedIndex + 1]);
+  };
+
+  const handleDatePick = (value: string) => {
+    if (!value) return;
+    const calendar = inputValueToCalendar(value);
+    if (sortedDateKeys.includes(calendar)) setSelectedDateKey(calendar);
+  };
 
   const spotlightVenue = venues.find((v) => v.imageUrl);
 
@@ -56,9 +96,7 @@ export default function ScoresTab({
         </div>
       </div>
 
-      {/* Main Grid Layout (8 cols Matches, 4 cols Stats/Bento) */}
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
-        {/* Matches Schedule List (8 Columns) */}
         <div className="xl:col-span-8 space-y-8">
           {dateGroups.length === 0 ? (
             <div className="glass-card p-12 text-center rounded-2xl border border-white/5 space-y-4">
@@ -68,27 +106,52 @@ export default function ScoresTab({
               </button>
             </div>
           ) : (
-            dateGroups.map(({ key, label, matches: dayMatches }) => (
-              <div key={key} className="space-y-4">
-                {/* Date Header */}
-                <div className="flex items-center justify-between border-b border-white/10 pb-3">
-                  <div className="flex items-center gap-3">
-                    <Calendar className="text-[#c3f400] w-5 h-5" />
-                    <h3 className="font-headline-lg-mobile md:font-headline-lg text-primary">{label}</h3>
-                  </div>
-                  <div className="flex gap-1.5">
-                    <button className="p-1.5 glass-card rounded-lg hover:bg-[#c3f400] hover:text-on-primary-fixed transition-all cursor-pointer">
-                      <ChevronLeft className="w-4 h-4" />
-                    </button>
-                    <button className="p-1.5 glass-card rounded-lg hover:bg-[#c3f400] hover:text-on-primary-fixed transition-all cursor-pointer">
-                      <ChevronRight className="w-4 h-4" />
-                    </button>
-                  </div>
+            <div className="space-y-4">
+              {/* Date navigation: prev / date picker / next */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-3">
+                <div className="flex items-center gap-3 min-w-0">
+                  <Calendar className="text-[#c3f400] w-5 h-5 shrink-0" />
+                  <h3 className="font-headline-lg-mobile md:font-headline-lg text-primary truncate">
+                    {selectedGroup?.label ?? selectedDateKey}
+                  </h3>
                 </div>
 
-                {/* Match Cards for this date */}
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    type="button"
+                    onClick={goPrevDay}
+                    disabled={!canGoPrev}
+                    aria-label="Ngày trước"
+                    className="p-1.5 glass-card rounded-lg hover:bg-[#c3f400] hover:text-on-primary-fixed transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-inherit"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+
+                  <input
+                    type="date"
+                    value={selectedDateKey ? calendarToInputValue(selectedDateKey) : ""}
+                    min={sortedDateKeys.length ? calendarToInputValue(sortedDateKeys[0]) : undefined}
+                    max={sortedDateKeys.length ? calendarToInputValue(sortedDateKeys[sortedDateKeys.length - 1]) : undefined}
+                    onChange={(e) => handleDatePick(e.target.value)}
+                    className="px-3 py-1.5 glass-card rounded-lg border border-white/10 bg-surface-container-high text-on-surface text-xs font-medium focus:border-[#c3f400] focus:ring-0 cursor-pointer [color-scheme:dark]"
+                    aria-label="Chọn ngày xem lịch thi đấu"
+                  />
+
+                  <button
+                    type="button"
+                    onClick={goNextDay}
+                    disabled={!canGoNext}
+                    aria-label="Ngày sau"
+                    className="p-1.5 glass-card rounded-lg hover:bg-[#c3f400] hover:text-on-primary-fixed transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-inherit"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              {selectedGroup && selectedGroup.matches.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {dayMatches.map((match) => (
+                  {selectedGroup.matches.map((match) => (
                     <div
                       key={match.id}
                       onClick={() => onSelectMatch(match)}
@@ -98,7 +161,6 @@ export default function ScoresTab({
                           : "border-l-[#00dbe9]"
                       }`}
                     >
-                      {/* Header: broadcast time (left) + status (right) */}
                       <div className="flex items-start justify-between gap-3 mb-4">
                         {match.time ? (
                           <span className="flex items-center gap-1 text-[10px] font-label-caps text-[#00eefc] shrink-0">
@@ -121,7 +183,6 @@ export default function ScoresTab({
                       </div>
 
                       <div className="flex flex-col gap-5">
-                        {/* Home Team Row */}
                         <div className="flex justify-between items-center">
                           <div className="flex items-center gap-3">
                             <img
@@ -142,7 +203,6 @@ export default function ScoresTab({
                           </span>
                         </div>
 
-                        {/* Away Team Row */}
                         <div className="flex justify-between items-center">
                           <div className="flex items-center gap-3">
                             <img
@@ -164,7 +224,6 @@ export default function ScoresTab({
                         </div>
                       </div>
 
-                      {/* Footer Arena Info */}
                       <div className="mt-5 flex justify-between items-center border-t border-white/5 pt-3 gap-2">
                         <span className="text-[10px] text-on-surface-variant font-label-caps truncate">
                           {match.group ? `${match.group} • ` : ""}{match.venue.split(",")[0]}
@@ -176,14 +235,16 @@ export default function ScoresTab({
                     </div>
                   ))}
                 </div>
-              </div>
-            ))
+              ) : (
+                <div className="glass-card p-8 text-center rounded-2xl border border-white/5">
+                  <p className="text-on-surface-variant font-body-md">Không có trận đấu trong ngày này.</p>
+                </div>
+              )}
+            </div>
           )}
         </div>
 
-        {/* Sidebar Bento Panel (4 Columns) */}
         <aside className="xl:col-span-4 space-y-6">
-          {/* Tournament Stats Card */}
           <div className="glass-card p-6 rounded-2xl border-t-2 border-[#c3f400] relative overflow-hidden">
             <h4 className="font-label-caps text-label-caps text-[#c3f400] mb-5 flex items-center gap-2">
               <Trophy className="w-4 h-4 text-[#c3f400]" /> THỐNG KÊ GIẢI ĐẤU
@@ -203,7 +264,6 @@ export default function ScoresTab({
               </div>
             </div>
 
-            {/* Top Scorers */}
             <div className="mt-6 border-t border-white/10 pt-5">
               <h5 className="text-[10px] font-bold text-on-surface mb-3 uppercase tracking-wider">Vua phá lưới</h5>
               <div className="space-y-2.5">
@@ -223,7 +283,6 @@ export default function ScoresTab({
             </div>
           </div>
 
-          {/* Mini Bracket Card */}
           <div className="glass-card p-6 rounded-2xl relative overflow-hidden">
             <h4 className="font-label-caps text-label-caps text-[#00eefc] mb-5 flex justify-between items-center">
               <span>SƠ ĐỒ VÒNG LOẠI</span>
@@ -241,7 +300,6 @@ export default function ScoresTab({
                 </div>
               </div>
 
-              {/* Dream Matchup */}
               <div className="bg-[#c3f400]/5 border border-[#c3f400]/20 p-4 rounded-xl text-center space-y-3">
                 <p className="text-[9px] font-bold text-[#c3f400] tracking-widest uppercase">CHUNG KẾT TRONG MƠ</p>
                 <div className="flex justify-around items-center">
@@ -263,7 +321,6 @@ export default function ScoresTab({
             </div>
           </div>
 
-          {/* Host City Spotlight */}
           {spotlightVenue && (
             <div className="rounded-2xl overflow-hidden glass-card relative h-48 group border border-white/5">
               <div

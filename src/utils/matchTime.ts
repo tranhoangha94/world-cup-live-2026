@@ -38,6 +38,50 @@ function calendarSortKey(calendar: string): number {
   return y * 10000 + m * 100 + d;
 }
 
+/** Today's calendar date in Vietnam (ICT, UTC+7). */
+export function getTodayCalendarICT(): string {
+  const now = new Date();
+  const ictMs = now.getTime() + now.getTimezoneOffset() * 60_000 + 7 * 60 * 60 * 1000;
+  const ict = new Date(ictMs);
+  return `${String(ict.getUTCDate()).padStart(2, "0")}/${String(ict.getUTCMonth() + 1).padStart(2, "0")}/${ict.getUTCFullYear()}`;
+}
+
+/** dd/mm/yyyy → yyyy-mm-dd for `<input type="date">`. */
+export function calendarToInputValue(calendar: string): string {
+  const [d, m, y] = calendar.split("/");
+  return `${y}-${m}-${d}`;
+}
+
+/** yyyy-mm-dd → dd/mm/yyyy */
+export function inputValueToCalendar(value: string): string {
+  const [y, m, d] = value.split("-");
+  return `${d}/${m}/${y}`;
+}
+
+/** Pick today if it has matches, otherwise the nearest calendar day with fixtures. */
+export function resolveDefaultCalendarDate(availableKeys: string[]): string | null {
+  if (availableKeys.length === 0) return null;
+  const sorted = [...availableKeys].sort((a, b) => calendarSortKey(a) - calendarSortKey(b));
+  const today = getTodayCalendarICT();
+  if (sorted.includes(today)) return today;
+
+  const todayKey = calendarSortKey(today);
+  let best = sorted[0];
+  let bestDiff = Math.abs(calendarSortKey(best) - todayKey);
+  for (const key of sorted) {
+    const diff = Math.abs(calendarSortKey(key) - todayKey);
+    if (diff < bestDiff) {
+      bestDiff = diff;
+      best = key;
+    }
+  }
+  return best;
+}
+
+export function sortCalendarKeysAsc(keys: string[]): string[] {
+  return [...keys].sort((a, b) => calendarSortKey(a) - calendarSortKey(b));
+}
+
 /** Combined ICT kickoff key for sorting (date + time). */
 export function matchICTSortKey(match: Pick<Match, "date" | "time">): number {
   const calendar = extractCalendarDate(match.date);
