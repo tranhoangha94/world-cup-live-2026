@@ -155,7 +155,12 @@ export default function MatchDetailTab({ match, onBack }: MatchDetailTabProps) {
                     <div className="glass-card rounded-xl p-4 flex items-center justify-between border-l-4 border-l-[#00dbe9]">
                       <div className="flex items-center gap-3">
                         {event.type === EventType.GOAL ? (
-                          <span className="text-[#c3f400] text-xl font-bold font-body-lg">⚽</span>
+                          <img
+                            src={event.team === "home" ? match.homeTeam.flagUrl : match.awayTeam.flagUrl}
+                            alt=""
+                            referrerPolicy="no-referrer"
+                            className="w-6 h-6 rounded-full object-cover border border-white/10 shrink-0"
+                          />
                         ) : event.type === EventType.YELLOW_CARD ? (
                           <span className="text-yellow-400 text-base">🟨</span>
                         ) : event.type === EventType.RED_CARD ? (
