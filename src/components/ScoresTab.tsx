@@ -5,7 +5,8 @@
 
 import React, { useState } from "react";
 import { Match, MatchStatus, TopScorer, Venue } from "../types.js";
-import { Search, Calendar, ChevronLeft, ChevronRight, Bell, Trophy, MapPin, RefreshCw, AlertCircle, CheckCircle2 } from "lucide-react";
+import { Search, Calendar, ChevronLeft, ChevronRight, Bell, Trophy, MapPin, RefreshCw, AlertCircle, CheckCircle2, Clock } from "lucide-react";
+import { formatBroadcastTimeVN } from "../utils/matchTime.js";
 
 interface ScoresTabProps {
   matches: Match[];
@@ -142,17 +143,23 @@ export default function ScoresTab({
                           : "border-l-[#00dbe9]"
                       }`}
                     >
-                      {/* Live Badge or Time */}
-                      <div className="absolute top-4 right-4 flex items-center gap-1.5">
+                      {/* Live Badge or broadcast time (VN / ICT) */}
+                      <div className="absolute top-4 right-4 flex flex-col items-end gap-1">
                         {match.status === MatchStatus.LIVE ? (
-                          <>
+                          <div className="flex items-center gap-1.5">
                             <span className="flex h-2 w-2 rounded-full bg-primary-fixed animate-pulse"></span>
                             <span className="text-[10px] font-label-caps text-[#c3f400]">TRỰC TIẾP - {match.minute || "72'"}</span>
-                          </>
+                          </div>
                         ) : match.status === MatchStatus.FINISHED ? (
                           <span className="bg-white/10 text-on-surface-variant font-label-caps text-[9px] px-2 py-0.5 rounded-full">KẾT THÚC (FT)</span>
                         ) : (
-                          <span className="text-[11px] font-label-caps text-[#00dbe9]">{match.time}</span>
+                          <span className="text-[11px] font-label-caps text-[#00dbe9]">SẮP DIỄN RA</span>
+                        )}
+                        {match.time && (
+                          <span className="flex items-center gap-1 text-[9px] font-label-caps text-[#00eefc]">
+                            <Clock className="w-3 h-3" />
+                            {formatBroadcastTimeVN(match.time)}
+                          </span>
                         )}
                       </div>
 
@@ -201,8 +208,8 @@ export default function ScoresTab({
                       </div>
 
                       {/* Footer Arena Info */}
-                      <div className="mt-5 flex justify-between items-center border-t border-white/5 pt-3">
-                        <span className="text-[10px] text-on-surface-variant font-label-caps truncate max-w-[150px]">
+                      <div className="mt-5 flex justify-between items-center border-t border-white/5 pt-3 gap-2">
+                        <span className="text-[10px] text-on-surface-variant font-label-caps truncate">
                           {match.group ? `${match.group} • ` : ""}{match.venue.split(",")[0]}
                         </span>
                         <span className="text-[#c3f400] text-[10px] font-bold flex items-center gap-0.5 group-hover:translate-x-1 duration-200">

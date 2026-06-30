@@ -5,7 +5,8 @@
 
 import React from "react";
 import { Match, MatchStatus, EventType } from "../types.js";
-import { ArrowLeft, Bell, History, PlayCircle, Image, Star } from "lucide-react";
+import { ArrowLeft, Bell, History, PlayCircle, Image, Star, Clock, MapPin } from "lucide-react";
+import { formatBroadcastTimeVN, formatMatchKickoff } from "../utils/matchTime.js";
 
 interface MatchDetailTabProps {
   match: Match;
@@ -85,6 +86,18 @@ export default function MatchDetailTab({ match, onBack }: MatchDetailTabProps) {
             <span className="font-label-caps text-[10px] text-on-surface-variant tracking-wider mt-1 block">
               {match.round} {match.group ? `• ${match.group}` : ""}
             </span>
+            {match.time && (
+              <div className="mt-2 flex flex-col items-center gap-1 text-[10px] text-on-surface-variant">
+                <span className="flex items-center gap-1.5 font-label-caps text-[#00eefc]">
+                  <Clock className="w-3.5 h-3.5" />
+                  Phát sóng trực tiếp: {formatBroadcastTimeVN(match.time)}
+                </span>
+                <span className="flex items-center gap-1.5 font-label-caps text-[9px]">
+                  <MapPin className="w-3 h-3 text-[#c3f400]" />
+                  {formatMatchKickoff(match)}
+                </span>
+              </div>
+            )}
           </div>
 
           {/* Away Team */}

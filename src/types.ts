@@ -62,7 +62,7 @@ export interface Match {
   round: string; // e.g. "Vòng Bảng", "Vòng 1/8", "Tứ Kết", "Bán Kết", "Chung Kết"
   group?: string; // e.g. "Bảng A"
   date: string; // e.g. "Thứ Hai, 15 Tháng 6, 2026"
-  time: string; // e.g. "07:00"
+  time: string; // Kickoff / broadcast time in Vietnam (ICT, UTC+7), e.g. "07:00"
   minute?: string; // e.g. "72'"
   venue: string; // e.g. "SVĐ Azteca, Mexico City"
   events?: MatchEvent[];

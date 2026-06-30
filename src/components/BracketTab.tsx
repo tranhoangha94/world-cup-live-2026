@@ -6,6 +6,7 @@
 import React, { useState } from "react";
 import { Match, MatchStatus } from "../types.js";
 import { Award, Trophy, MapPin, Calendar, Clock, ChevronRight, LayoutGrid, Network } from "lucide-react";
+import { formatBracketKickoff, formatBroadcastTimeVN } from "../utils/matchTime.js";
 
 interface BracketTabProps {
   matches: Match[];
@@ -53,10 +54,10 @@ export default function BracketTab({ matches, onSelectMatch }: BracketTabProps) 
           onClick={() => onSelectMatch(match)}
           className="bg-surface-container-low/60 hover:bg-surface-container/85 border border-white/5 p-2 rounded-xl transition-all duration-200 cursor-pointer text-left group hover:border-[#c3f400]/40 w-52 flex flex-col gap-1.5 shadow-md"
         >
-          <div className="flex justify-between items-center text-[8px] font-label-caps text-on-surface-variant border-b border-white/5 pb-1">
-            <span>{match.date.split(",")[1]?.trim() || match.date}</span>
-            {isLive && <span className="text-[#c3f400] animate-pulse">LIVE</span>}
-            {isFinished && <span className="text-on-surface-variant font-bold">FT</span>}
+          <div className="flex justify-between items-center text-[8px] font-label-caps text-on-surface-variant border-b border-white/5 pb-1 gap-1">
+            <span className="truncate">{formatBracketKickoff(match)}</span>
+            {isLive && <span className="text-[#c3f400] animate-pulse shrink-0">LIVE</span>}
+            {isFinished && !isLive && <span className="text-on-surface-variant font-bold shrink-0">FT</span>}
           </div>
           <div className="space-y-1">
             <div className="flex items-center justify-between">
@@ -84,16 +85,19 @@ export default function BracketTab({ matches, onSelectMatch }: BracketTabProps) 
         onClick={() => onSelectMatch(match)}
         className="glass-card p-4 rounded-2xl relative group hover:border-[#c3f400]/50 hover:translate-y-[-2px] transition-all cursor-pointer border border-white/5 w-64 shadow-lg text-left"
       >
-        <div className="absolute top-2 right-2">
+        <div className="absolute top-2 right-2 flex flex-col items-end gap-0.5">
           {isLive ? (
             <span className="bg-[#c3f400]/10 text-[#c3f400] font-label-caps text-[8px] px-2 py-0.5 rounded-full animate-pulse font-bold">LIVE</span>
           ) : isFinished ? (
             <span className="bg-white/10 text-on-surface-variant font-label-caps text-[8px] px-2 py-0.5 rounded-full">FT</span>
           ) : (
-            <span className="text-[#00eefc] font-label-caps text-[8px]">{match.time}</span>
+            <span className="text-[#00eefc] font-label-caps text-[8px]">SẮP DIỄN RA</span>
+          )}
+          {match.time && (
+            <span className="text-[#00eefc] font-label-caps text-[7px]">{formatBroadcastTimeVN(match.time)}</span>
           )}
         </div>
-        <div className="text-[9px] text-on-surface-variant font-label-caps mb-2.5">
+        <div className="text-[9px] text-on-surface-variant font-label-caps mb-2.5 pr-16">
           {match.date} • {match.venue.split(",")[0]}
         </div>
 
@@ -223,9 +227,10 @@ export default function BracketTab({ matches, onSelectMatch }: BracketTabProps) 
                     </div>
 
                     <div className="text-center space-y-0.5">
-                      <div className="text-primary font-bold text-[10px] tracking-wide">ESTADIO AZTECA</div>
+                      <div className="text-primary font-bold text-[10px] tracking-wide">{finalMatch.venue.split(",")[0].toUpperCase()}</div>
                       <div className="text-on-surface-variant text-[9px] font-label-caps flex items-center justify-center gap-1">
-                        <Calendar className="w-3 h-3 text-[#c3f400]" /> 19/07 • 07:00
+                        <Calendar className="w-3 h-3 text-[#c3f400]" />
+                        {formatBracketKickoff(finalMatch)}
                       </div>
                     </div>
                   </div>
