@@ -16,6 +16,11 @@ import MatchDetailTab from "./components/MatchDetailTab.js";
 import StandingsTab from "./components/StandingsTab.js";
 import NewsTab from "./components/NewsTab.js";
 import { Trophy, Clock, Wifi, Calendar, Globe, AlertTriangle } from "lucide-react";
+import {
+  loadClientGroundingCache,
+  saveClientGroundingCache,
+  applyClientCacheToState,
+} from "./utils/clientCache.js";
 
 type ActiveTab = "scores" | "bracket" | "standings" | "news" | "detail";
 
@@ -39,6 +44,24 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [syncing, setSyncing] = useState(false);
   const [time, setTime] = useState("");
+  const [lastGroundingSync, setLastGroundingSync] = useState<string | null>(null);
+
+  const persistClientCache = (
+    matchesData: Match[],
+    standingsData: StandingGroup[],
+    newsData: NewsArticle[],
+    scorersData: TopScorer[],
+    syncedAt: string | null
+  ) => {
+    saveClientGroundingCache({
+      matches: matchesData,
+      standings: standingsData,
+      news: newsData,
+      topScorers: scorersData,
+      lastGroundingSync: syncedAt,
+    });
+    if (syncedAt) setLastGroundingSync(syncedAt);
+  };
 
   // Live clock
   useEffect(() => {
@@ -51,7 +74,7 @@ export default function App() {
     return () => clearInterval(timer);
   }, []);
 
-  // Fetch initial tournament data
+  // Fetch initial tournament data (server cache includes persisted Grounding sync)
   const loadData = async () => {
     try {
       setLoading(true);
@@ -63,19 +86,37 @@ export default function App() {
         fetch("/api/worldcup/venues").then((r) => r.json()),
       ]);
 
-      setMatches(matchesRes.matches || []);
-      setStandings(standingsRes.standings || []);
+      const matchesData = matchesRes.matches || [];
+      const standingsData = standingsRes.standings || [];
+      const newsData = newsRes.news || [];
+      const scorersData = statsRes.topScorers || [];
+      const syncedAt = matchesRes.lastGroundingSync || statsRes.lastGroundingSync || null;
+
+      setMatches(matchesData);
+      setStandings(standingsData);
       setStats(statsRes || { avgGoals: 2.8, yellowCards: 14, avgAttendance: 64200, topScorers: [] });
-      setNews(newsRes.news || []);
+      setNews(newsData);
       setVenues(venuesRes.venues || []);
+
+      persistClientCache(matchesData, standingsData, newsData, scorersData, syncedAt);
     } catch (error) {
-      console.error("Failed to load World Cup data from server API, utilizing local fallback:", error);
+      console.error("Failed to load World Cup data from server API, using local cache:", error);
+      const cached = loadClientGroundingCache();
+      if (cached) {
+        applyClientCacheToState(cached, { setMatches, setStandings, setNews, setStats });
+        setLastGroundingSync(cached.lastGroundingSync);
+      }
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
+    const cached = loadClientGroundingCache();
+    if (cached) {
+      applyClientCacheToState(cached, { setMatches, setStandings, setNews, setStats });
+      setLastGroundingSync(cached.lastGroundingSync);
+    }
     loadData();
   }, []);
 
@@ -88,14 +129,22 @@ export default function App() {
       if (!res.ok) {
         throw new Error(result.message || "Failed to sync data with AI");
       }
-      // Reload updated states
+      // Reload updated states and persist to browser cache
       if (result.data) {
-        setMatches(result.data.matches || matches);
-        setNews(result.data.news || news);
+        const matchesData = result.data.matches || matches;
+        const standingsData = result.data.standings || standings;
+        const newsData = result.data.news || news;
+        const scorersData = result.data.scorers || stats.topScorers;
+        const syncedAt = result.lastGroundingSync || new Date().toISOString();
+
+        setMatches(matchesData);
+        setStandings(standingsData);
+        setNews(newsData);
         setStats((prev) => ({
           ...prev,
-          topScorers: result.data.scorers || prev.topScorers
+          topScorers: scorersData,
         }));
+        persistClientCache(matchesData, standingsData, newsData, scorersData, syncedAt);
       }
     } catch (err: any) {
       console.error(err);
