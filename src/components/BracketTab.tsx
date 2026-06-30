@@ -85,19 +85,24 @@ export default function BracketTab({ matches, onSelectMatch }: BracketTabProps) 
         onClick={() => onSelectMatch(match)}
         className="glass-card p-4 rounded-2xl relative group hover:border-[#c3f400]/50 hover:translate-y-[-2px] transition-all cursor-pointer border border-white/5 w-64 shadow-lg text-left"
       >
-        <div className="absolute top-2 right-2 flex flex-col items-end gap-0.5">
-          {isLive ? (
-            <span className="bg-[#c3f400]/10 text-[#c3f400] font-label-caps text-[8px] px-2 py-0.5 rounded-full animate-pulse font-bold">LIVE</span>
-          ) : isFinished ? (
-            <span className="bg-white/10 text-on-surface-variant font-label-caps text-[8px] px-2 py-0.5 rounded-full">FT</span>
+        <div className="flex items-start justify-between gap-2 mb-2.5">
+          {match.time ? (
+            <span className="flex items-center gap-1 text-[8px] font-label-caps text-[#00eefc] shrink-0">
+              <Clock className="w-3 h-3" />
+              {formatBroadcastTimeVN(match.time)}
+            </span>
           ) : (
-            <span className="text-[#00eefc] font-label-caps text-[8px]">SẮP DIỄN RA</span>
+            <span />
           )}
-          {match.time && (
-            <span className="text-[#00eefc] font-label-caps text-[7px]">{formatBroadcastTimeVN(match.time)}</span>
+          {isLive ? (
+            <span className="bg-[#c3f400]/10 text-[#c3f400] font-label-caps text-[8px] px-2 py-0.5 rounded-full animate-pulse font-bold shrink-0">LIVE</span>
+          ) : isFinished ? (
+            <span className="bg-white/10 text-on-surface-variant font-label-caps text-[8px] px-2 py-0.5 rounded-full shrink-0">FT</span>
+          ) : (
+            <span className="text-[#00eefc] font-label-caps text-[8px] shrink-0">SẮP DIỄN RA</span>
           )}
         </div>
-        <div className="text-[9px] text-on-surface-variant font-label-caps mb-2.5 pr-16">
+        <div className="text-[9px] text-on-surface-variant font-label-caps mb-2.5">
           {match.date} • {match.venue.split(",")[0]}
         </div>
 

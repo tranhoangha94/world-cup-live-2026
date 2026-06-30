@@ -143,27 +143,29 @@ export default function ScoresTab({
                           : "border-l-[#00dbe9]"
                       }`}
                     >
-                      {/* Live Badge or broadcast time (VN / ICT) */}
-                      <div className="absolute top-4 right-4 flex flex-col items-end gap-1">
+                      {/* Header: broadcast time (left) + status (right) */}
+                      <div className="flex items-start justify-between gap-3 mb-4">
+                        {match.time ? (
+                          <span className="flex items-center gap-1 text-[10px] font-label-caps text-[#00eefc] shrink-0">
+                            <Clock className="w-3.5 h-3.5" />
+                            {formatBroadcastTimeVN(match.time)}
+                          </span>
+                        ) : (
+                          <span />
+                        )}
                         {match.status === MatchStatus.LIVE ? (
-                          <div className="flex items-center gap-1.5">
+                          <div className="flex items-center gap-1.5 shrink-0">
                             <span className="flex h-2 w-2 rounded-full bg-primary-fixed animate-pulse"></span>
                             <span className="text-[10px] font-label-caps text-[#c3f400]">TRỰC TIẾP - {match.minute || "72'"}</span>
                           </div>
                         ) : match.status === MatchStatus.FINISHED ? (
-                          <span className="bg-white/10 text-on-surface-variant font-label-caps text-[9px] px-2 py-0.5 rounded-full">KẾT THÚC (FT)</span>
+                          <span className="bg-white/10 text-on-surface-variant font-label-caps text-[9px] px-2 py-0.5 rounded-full shrink-0">KẾT THÚC (FT)</span>
                         ) : (
-                          <span className="text-[11px] font-label-caps text-[#00dbe9]">SẮP DIỄN RA</span>
-                        )}
-                        {match.time && (
-                          <span className="flex items-center gap-1 text-[9px] font-label-caps text-[#00eefc]">
-                            <Clock className="w-3 h-3" />
-                            {formatBroadcastTimeVN(match.time)}
-                          </span>
+                          <span className="text-[11px] font-label-caps text-[#00dbe9] shrink-0">SẮP DIỄN RA</span>
                         )}
                       </div>
 
-                      <div className="flex flex-col gap-5 mt-4">
+                      <div className="flex flex-col gap-5">
                         {/* Home Team Row */}
                         <div className="flex justify-between items-center">
                           <div className="flex items-center gap-3">
@@ -180,7 +182,7 @@ export default function ScoresTab({
                               )}
                             </div>
                           </div>
-                          <span className="font-display-lg text-[22px] text-primary">
+                          <span className="font-display-lg text-[22px] text-primary tabular-nums min-w-[1.5rem] text-right">
                             {match.status !== MatchStatus.UPCOMING ? match.homeScore : "-"}
                           </span>
                         </div>
@@ -201,7 +203,7 @@ export default function ScoresTab({
                               )}
                             </div>
                           </div>
-                          <span className="font-display-lg text-[22px] text-primary">
+                          <span className="font-display-lg text-[22px] text-primary tabular-nums min-w-[1.5rem] text-right">
                             {match.status !== MatchStatus.UPCOMING ? match.awayScore : "-"}
                           </span>
                         </div>
