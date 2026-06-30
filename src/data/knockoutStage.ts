@@ -176,11 +176,29 @@ export const knockoutMatches: Match[] = [
     id: "r32_10",
     homeTeam: { name: "Bờ Biển Ngà", code: "CIV", flagUrl: "https://flagcdn.com/w160/ci.png" },
     awayTeam: { name: "Na Uy", code: "NOR", flagUrl: "https://flagcdn.com/w160/no.png" },
-    status: MatchStatus.UPCOMING,
+    homeScore: 1,
+    awayScore: 2,
+    status: MatchStatus.FINISHED,
     round: "Vòng 32",
     date: "01/07/2026",
     time: "00:00",
-    venue: "Sân vận động AT&T, Dallas"
+    venue: "Sân vận động AT&T, Dallas",
+    events: [
+      { minute: "39'", type: EventType.GOAL, player: "Antonio Nusa", team: "away", detail: "Na Uy dẫn trước ở hiệp một" },
+      { minute: "74'", type: EventType.GOAL, player: "Amad Diallo", team: "home", detail: "Bờ Biển Ngà gỡ hòa" },
+      { minute: "86'", type: EventType.GOAL, player: "Erling Haaland", team: "away", detail: "Haaland chốt hạ — Na Uy vào vòng 16" },
+    ],
+    stats: {
+      possession: { home: 52, away: 48 },
+      shots: { home: 14, away: 9 },
+      shotsOnTarget: { home: 5, away: 3 },
+      passAccuracy: { home: 86, away: 89 },
+    },
+    lineups: [
+      { name: "Erling Haaland", position: "ST", team: "away", rating: 8.6 },
+      { name: "Antonio Nusa", position: "LW", team: "away", rating: 7.8 },
+      { name: "Amad Diallo", position: "RW", team: "home", rating: 7.5 },
+    ],
   },
   {
     id: "r32_11",
@@ -287,7 +305,7 @@ export const knockoutMatches: Match[] = [
   {
     id: "r16_5",
     homeTeam: { name: "Brasil", code: "BRA", flagUrl: "https://flagcdn.com/w160/br.png" },
-    awayTeam: { name: "Bờ Biển Ngà / Na Uy", code: "TBD", flagUrl: "https://flagcdn.com/w160/un.png" },
+    awayTeam: { name: "Na Uy", code: "NOR", flagUrl: "https://flagcdn.com/w160/no.png" },
     status: MatchStatus.UPCOMING,
     round: "Vòng 16",
     date: "Thứ Ba, 07/07/2026",
