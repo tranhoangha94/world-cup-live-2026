@@ -50,6 +50,8 @@ export default function ScoresTab({
     return groups;
   }, {});
 
+  const spotlightVenue = venues.find((v) => v.imageUrl);
+
   const handleSyncClick = async () => {
     try {
       setSyncStatus({ type: null, msg: "" });
@@ -298,20 +300,20 @@ export default function ScoresTab({
           </div>
 
           {/* Host City Spotlight */}
-          {venues.length > 0 && (
-            <div className="rounded-2xl overflow-hidden glass-card relative h-48 group cursor-pointer border border-white/5">
+          {spotlightVenue && (
+            <div className="rounded-2xl overflow-hidden glass-card relative h-48 group border border-white/5">
               <div
                 className="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-700 opacity-60"
-                style={{ backgroundImage: `url('${venues[2]?.imageUrl || venues[0]?.imageUrl}')` }}
+                style={{ backgroundImage: `url('${spotlightVenue.imageUrl}')` }}
               ></div>
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
               <div className="absolute bottom-4 left-4">
                 <span className="text-[8px] font-label-caps bg-primary-container text-on-primary-container px-2 py-0.5 rounded">
                   THÀNH PHỐ CHỦ NHÀ
                 </span>
-                <h5 className="font-headline-lg-mobile text-primary mt-1">{venues[2]?.city || "Atlanta"}</h5>
+                <h5 className="font-headline-lg-mobile text-primary mt-1">{spotlightVenue.city}</h5>
                 <p className="text-[10px] text-on-surface-variant flex items-center gap-1 font-body-md">
-                  <MapPin className="w-3 h-3 text-[#c3f400]" /> {venues[2]?.name || "Sân vận động Mercedes-Benz"}
+                  <MapPin className="w-3 h-3 text-[#c3f400]" /> {spotlightVenue.name}
                 </p>
               </div>
             </div>

@@ -35,18 +35,20 @@ export default function NewsTab({ news, venues }: NewsTabProps) {
           {venues.map((venue) => (
             <div key={venue.name} className="glass-card rounded-2xl overflow-hidden group border border-white/10 hover:border-[#c3f400]/40 transition-all flex flex-col h-full">
               {/* Cover Image */}
-              <div className="relative h-48 overflow-hidden">
-                <img
-                  src={venue.imageUrl}
-                  alt={venue.name}
-                  referrerPolicy="no-referrer"
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent opacity-60"></div>
-                <div className="absolute bottom-4 left-4 flex items-center gap-1.5 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-full text-[10px] text-white font-label-caps border border-white/10">
-                  <MapPin className="w-3 h-3 text-[#c3f400]" /> {venue.city}, {venue.country}
+              {venue.imageUrl && (
+                <div className="relative h-48 overflow-hidden">
+                  <img
+                    src={venue.imageUrl}
+                    alt={venue.name}
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent opacity-60"></div>
+                  <div className="absolute bottom-4 left-4 flex items-center gap-1.5 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-full text-[10px] text-white font-label-caps border border-white/10">
+                    <MapPin className="w-3 h-3 text-[#c3f400]" /> {venue.city}, {venue.country}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Body Info */}
               <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
@@ -59,7 +61,6 @@ export default function NewsTab({ news, venues }: NewsTabProps) {
                   <span className="flex items-center gap-1">
                     <Users className="w-3.5 h-3.5 text-[#00eefc]" /> {venue.capacity}
                   </span>
-                  <span className="text-[#c3f400] font-bold">CHI TIẾT</span>
                 </div>
               </div>
             </div>
@@ -80,14 +81,16 @@ export default function NewsTab({ news, venues }: NewsTabProps) {
               className="glass-card rounded-2xl overflow-hidden group border border-white/5 hover:border-[#00eefc]/30 hover:translate-y-[-2px] transition-all flex flex-col sm:flex-row h-full"
             >
               {/* Image side */}
-              <div className="relative w-full sm:w-44 h-44 sm:h-auto flex-shrink-0 overflow-hidden">
-                <img
-                  src={article.imageUrl}
-                  alt={article.title}
-                  referrerPolicy="no-referrer"
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-              </div>
+              {article.imageUrl && (
+                <div className="relative w-full sm:w-44 h-44 sm:h-auto flex-shrink-0 overflow-hidden">
+                  <img
+                    src={article.imageUrl}
+                    alt={article.title}
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                </div>
+              )}
 
               {/* Text side */}
               <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
@@ -104,12 +107,16 @@ export default function NewsTab({ news, venues }: NewsTabProps) {
                   </p>
                 </div>
 
-                <a
-                  href={article.url}
-                  className="inline-flex items-center gap-1 text-[10px] font-bold font-label-caps text-[#00eefc] hover:underline"
-                >
-                  XEM CHI TIẾT <ExternalLink className="w-3 h-3" />
-                </a>
+                {article.url && (
+                  <a
+                    href={article.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-[10px] font-bold font-label-caps text-[#00eefc] hover:underline"
+                  >
+                    XEM CHI TIẾT <ExternalLink className="w-3 h-3" />
+                  </a>
+                )}
               </div>
             </div>
           ))}

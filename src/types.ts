@@ -68,6 +68,9 @@ export interface Match {
   events?: MatchEvent[];
   stats?: MatchStats;
   lineups?: PlayerRating[];
+  highlightVideoUrl?: string;
+  highlightThumbnailUrl?: string;
+  galleryImages?: string[];
 }
 
 export interface StandingTeam {

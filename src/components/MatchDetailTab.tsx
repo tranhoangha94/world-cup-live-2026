@@ -5,7 +5,7 @@
 
 import React from "react";
 import { Match, MatchStatus, EventType } from "../types.js";
-import { ArrowLeft, Bell, History, Award, CheckCircle2, ChevronRight, PlayCircle, Image, Star, Eye } from "lucide-react";
+import { ArrowLeft, Bell, History, PlayCircle, Image, Star } from "lucide-react";
 
 interface MatchDetailTabProps {
   match: Match;
@@ -13,6 +13,9 @@ interface MatchDetailTabProps {
 }
 
 export default function MatchDetailTab({ match, onBack }: MatchDetailTabProps) {
+  const hasHighlight = Boolean(match.highlightVideoUrl);
+  const hasGallery = Boolean(match.galleryImages?.length);
+
   return (
     <div className="space-y-8 max-w-4xl mx-auto" id="match-detail-view">
       {/* Top action header */}
@@ -174,32 +177,47 @@ export default function MatchDetailTab({ match, onBack }: MatchDetailTabProps) {
             )}
           </div>
 
-          {/* Media Highlights Bento Section */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="glass-card rounded-2xl overflow-hidden group border border-white/5 cursor-pointer relative h-48">
-              <div
-                className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105 opacity-60"
-                style={{ backgroundImage: `url('https://lh3.googleusercontent.com/aida-public/AB6AXuA-0Z5Kn4EVN0mA51JSbSSXqMTg2WyNVTAqvHFWeo7ZMim6EVYlbS7Fu6uc6pNN16Fe6cEUTCFe7qEfOevCJmiTAUyiS70ZFKzjT6hAECS2Fzhbg2Bs0CqUNgFJfkCJnfYpsd4jbCbQQ9Mun9bdQePi48cONyt7CV8R1Q9lTO1l4EYHy9Ydsvxtkq476CFcbj5Omz6rLmV_FwGbvQywBmfFL2e7l5fl3NGEPjows3AGppx9V0tOqP1_B6ogDqNuzlnit5lA3Gsr2eE')` }}
-              ></div>
-              <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
-              <div className="absolute bottom-4 left-4 flex items-center gap-2">
-                <PlayCircle className="text-[#c3f400] w-6 h-6" />
-                <span className="font-label-caps text-xs text-primary font-bold">Highlights: Hiệp 1</span>
-              </div>
-            </div>
+          {(hasHighlight || hasGallery) && (
+            <div className={`grid gap-4 ${hasHighlight && hasGallery ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1"}`}>
+              {hasHighlight && (
+                <a
+                  href={match.highlightVideoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="glass-card rounded-2xl overflow-hidden group border border-white/5 cursor-pointer relative h-48 block"
+                >
+                  {match.highlightThumbnailUrl && (
+                    <div
+                      className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105 opacity-60"
+                      style={{ backgroundImage: `url('${match.highlightThumbnailUrl}')` }}
+                    />
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent" />
+                  <div className="absolute bottom-4 left-4 flex items-center gap-2">
+                    <PlayCircle className="text-[#c3f400] w-6 h-6" />
+                    <span className="font-label-caps text-xs text-primary font-bold">Video Highlights</span>
+                  </div>
+                </a>
+              )}
 
-            <div className="glass-card rounded-2xl overflow-hidden group border border-white/5 cursor-pointer relative h-48">
-              <div
-                className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105 opacity-60"
-                style={{ backgroundImage: `url('https://lh3.googleusercontent.com/aida-public/AB6AXuCtYf3lF6MJzXsz44ZVAZSpa2OlqMOdvHgBLolHQrQi15CAuGndbOelrX827zNOM2V7zOS_UibWzcusQt-m_yLP6BP2yVZ4mGM_yNNR6kFJD8xSwLnkFY1u7HwpJBE2AVcD3vZ5BS9osqjAWDHnWno-2y_SMYce4AeXvS2uyenAQ668m8Tt461-t01SJBI7cmvLwnPYfIEZ9lT5F97DSGy9IWGMg-3s4dI9XOkR9i962igM0uWVP_pKo6E7_18TtGAASw4d7TDJbZ8')` }}
-              ></div>
-              <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
-              <div className="absolute bottom-4 left-4 flex items-center gap-2">
-                <Image className="text-[#00eefc] w-6 h-6" />
-                <span className="font-label-caps text-xs text-primary font-bold">Bộ sưu tập ảnh trận đấu</span>
-              </div>
+              {hasGallery && (
+                <div className="glass-card rounded-2xl overflow-hidden group border border-white/5 relative h-48">
+                  <div
+                    className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105 opacity-60"
+                    style={{ backgroundImage: `url('${match.galleryImages![0]}')` }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent" />
+                  <div className="absolute bottom-4 left-4 flex items-center gap-2">
+                    <Image className="text-[#00eefc] w-6 h-6" />
+                    <span className="font-label-caps text-xs text-primary font-bold">
+                      Bộ sưu tập ảnh trận đấu
+                      {match.galleryImages!.length > 1 && ` (${match.galleryImages!.length})`}
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
-          </div>
+          )}
         </div>
 
         {/* Right Col: Stats & Ratings (4 cols) */}
@@ -266,7 +284,7 @@ export default function MatchDetailTab({ match, onBack }: MatchDetailTabProps) {
           )}
 
           {/* Player Lineup Rating Spotlight */}
-          {match.lineups && (
+          {match.lineups && match.lineups.length > 0 && (
             <div className="glass-card rounded-2xl p-5 border border-white/5 space-y-4">
               <h4 className="font-label-caps text-[11px] text-[#00eefc] tracking-wider text-center border-b border-white/5 pb-2">
                 ĐỘI HÌNH TIÊU BIỂU
@@ -276,7 +294,7 @@ export default function MatchDetailTab({ match, onBack }: MatchDetailTabProps) {
                 {match.lineups.map((player) => (
                   <div
                     key={player.name}
-                    className="flex items-center gap-3 p-2 bg-surface-container/30 hover:bg-white/5 rounded-xl transition-all cursor-pointer"
+                    className="flex items-center gap-3 p-2 bg-surface-container/30 hover:bg-white/5 rounded-xl transition-all"
                   >
                     <div className="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center font-bold text-xs text-primary-fixed border border-white/10">
                       <Star className="w-4 h-4 text-[#c3f400]" />
