@@ -5,7 +5,7 @@
 
 import { Match, StandingGroup, TopScorer, NewsArticle } from "../types.js";
 
-const STORAGE_KEY = "wc2026-tournament-cache-v8";
+const STORAGE_KEY = "wc2026-tournament-cache-v9";
 
 export interface ClientTournamentCache {
   matches: Match[];

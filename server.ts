@@ -114,7 +114,7 @@ const knockoutMatches: Match[] = [
     awayTeam: { name: "Thụy Điển", code: "SWE", flagUrl: "https://flagcdn.com/w160/se.png" },
     status: MatchStatus.UPCOMING,
     round: "Vòng 32",
-    date: "Ngày mai, 01/07/2026",
+    date: "Thứ Tư, 01/07/2026",
     time: "04:00",
     venue: "Sân vận động Mercedes-Benz, Atlanta"
   },
@@ -196,8 +196,8 @@ const knockoutMatches: Match[] = [
     awayScore: 2,
     status: MatchStatus.FINISHED,
     round: "Vòng 32",
-    date: "Hôm nay, 30/06/2026",
-    time: "22:00",
+    date: "Thứ Tư, 01/07/2026",
+    time: "00:00",
     venue: "Sân vận động Hard Rock, Miami",
     events: [
       { minute: "24'", type: EventType.GOAL, player: "Erling Haaland", team: "away", detail: "Dứt điểm cận thành mở tỷ số" },
@@ -222,7 +222,7 @@ const knockoutMatches: Match[] = [
     awayTeam: { name: "Ecuador", code: "ECU", flagUrl: "https://flagcdn.com/w160/ec.png" },
     status: MatchStatus.UPCOMING,
     round: "Vòng 32",
-    date: "Ngày mai, 01/07/2026",
+    date: "Thứ Tư, 01/07/2026",
     time: "08:00",
     venue: "Sân vận động Azteca, Mexico City"
   },
@@ -232,7 +232,7 @@ const knockoutMatches: Match[] = [
     awayTeam: { name: "CHDC Congo", code: "COD", flagUrl: "https://flagcdn.com/w160/cd.png" },
     status: MatchStatus.UPCOMING,
     round: "Vòng 32",
-    date: "Ngày mai, 01/07/2026",
+    date: "Thứ Tư, 01/07/2026",
     time: "23:00",
     venue: "Sân vận động Lincoln Financial, Philadelphia"
   },
