@@ -5,34 +5,17 @@
 
 import express from "express";
 import path from "path";
-import { GoogleGenAI, Type } from "@google/genai";
 import dotenv from "dotenv";
 import { Match, MatchStatus, EventType, StandingGroup, TopScorer, Venue, NewsArticle } from "./src/types.js";
 import { groupStageMatches, groupStageStandings } from "./src/data/groupStage.js";
-import {
-  loadGroundingCache,
-  saveGroundingCache,
-  mergeMatches,
-} from "./src/data/groundingPersistence.js";
+import { applyScheduledMatchUpdates } from "./src/data/matchScheduler.js";
+import { loadTournamentCache, saveTournamentCache } from "./src/data/tournamentCache.js";
 
 dotenv.config();
 
 const app = express();
 app.use(express.json());
 const PORT = 3000;
-
-// Initialize Gemini Client
-let ai: GoogleGenAI | null = null;
-if (process.env.GEMINI_API_KEY) {
-  ai = new GoogleGenAI({
-    apiKey: process.env.GEMINI_API_KEY,
-    httpOptions: {
-      headers: {
-        'User-Agent': 'aistudio-build',
-      }
-    }
-  });
-}
 
 // ----------------------------------------------------
 // Base High-Fidelity FIFA World Cup 2026 Data Cache
@@ -494,29 +477,44 @@ const cacheVenues: Venue[] = [
   }
 ];
 
-let lastGroundingSyncAt: string | null = null;
+let lastCacheUpdatedAt: string | null = null;
 
-function applyPersistedGroundingCache(): void {
-  const persisted = loadGroundingCache();
+function persistTournamentCache(): void {
+  saveTournamentCache({
+    matches: cacheMatches,
+    standings: cacheStandings,
+    news: cacheNews,
+    scorers: cacheScorers,
+    updatedAt: lastCacheUpdatedAt ?? new Date().toISOString(),
+  });
+}
+
+function applyPersistedTournamentCache(): void {
+  const persisted = loadTournamentCache();
   if (!persisted) return;
   cacheMatches = persisted.matches;
   cacheStandings = persisted.standings;
   cacheNews = persisted.news;
   cacheScorers = persisted.scorers;
-  lastGroundingSyncAt = persisted.syncedAt;
+  lastCacheUpdatedAt = persisted.updatedAt;
 }
 
-function persistGroundingCache(): void {
-  saveGroundingCache({
-    matches: cacheMatches,
-    standings: cacheStandings,
-    news: cacheNews,
-    scorers: cacheScorers,
-    syncedAt: lastGroundingSyncAt ?? new Date().toISOString(),
-  });
+function refreshScheduleAndPersist(): void {
+  const { matches, changed } = applyScheduledMatchUpdates(cacheMatches);
+  if (changed) {
+    cacheMatches = matches;
+    lastCacheUpdatedAt = new Date().toISOString();
+    persistTournamentCache();
+  }
 }
 
-applyPersistedGroundingCache();
+applyPersistedTournamentCache();
+refreshScheduleAndPersist();
+
+// Re-check schedule every 5 minutes on long-running servers
+if (!process.env.VERCEL) {
+  setInterval(refreshScheduleAndPersist, 5 * 60 * 1000);
+}
 
 // ----------------------------------------------------
 // API Route Implementation
@@ -524,7 +522,8 @@ applyPersistedGroundingCache();
 
 // Get matches and schedule
 app.get("/api/worldcup/matches", (req, res) => {
-  res.json({ matches: cacheMatches, lastGroundingSync: lastGroundingSyncAt });
+  refreshScheduleAndPersist();
+  res.json({ matches: cacheMatches, lastUpdated: lastCacheUpdatedAt });
 });
 
 // Get standigs
@@ -539,7 +538,7 @@ app.get("/api/worldcup/stats", (req, res) => {
     yellowCards: 14,
     avgAttendance: 64200,
     topScorers: cacheScorers,
-    lastGroundingSync: lastGroundingSyncAt,
+    lastUpdated: lastCacheUpdatedAt,
   });
 });
 
@@ -551,79 +550,6 @@ app.get("/api/worldcup/news", (req, res) => {
 // Get tournament venues
 app.get("/api/worldcup/venues", (req, res) => {
   res.json({ venues: cacheVenues });
-});
-
-// Search & sync World Cup data using Gemini Grounding
-app.post("/api/worldcup/sync", async (req, res) => {
-  if (!ai) {
-    return res.status(400).json({
-      success: false,
-      message: "Chưa cấu hình GEMINI_API_KEY trong file .env hoặc tab Secrets. Vui lòng thêm key để kích hoạt tính năng AI Search Grounding."
-    });
-  }
-
-  try {
-    const prompt = `Bạn là một trợ lý thông tin thể thao World Cup 2026 chính xác 100%. Hãy tra cứu Internet và trả về thông tin cập nhật mới nhất cho:
-1. Kết quả các trận đấu gần nhất tại Vòng Loại và Vòng Chung Kết World Cup 2026.
-2. Tin tức mới nhất về các đội bóng tranh tài (như Mỹ, Brazil, Pháp, Argentina, Mexico, v.v.).
-3. Điểm nhấn nổi bật của các trận cầu lớn.
-
-Hãy dịch toàn bộ nội dung sang tiếng Việt tinh tế và trả về kết quả dưới dạng JSON có cấu trúc sau:
-{
-  "matches": Array of updated matches,
-  "news": Array of recent news articles,
-  "scorers": Array of top scorers,
-  "standings": Array of group standings (optional)
-}
-
-Lưu ý: Chỉ trả về JSON thuần túy, không có thẻ markdown \`\`\`json ở đầu và cuối.`;
-
-    const response = await ai.models.generateContent({
-      model: "gemini-3.5-flash",
-      contents: prompt,
-      config: {
-        tools: [{ googleSearch: {} }],
-        responseMimeType: "application/json",
-      },
-    });
-
-    const text = response.text?.trim() || "{}";
-    const data = JSON.parse(text);
-
-    if (data.matches && data.matches.length > 0) {
-      cacheMatches = mergeMatches(cacheMatches, data.matches);
-    }
-    if (data.news && data.news.length > 0) {
-      cacheNews = data.news;
-    }
-    if (data.scorers && data.scorers.length > 0) {
-      cacheScorers = data.scorers;
-    }
-    if (data.standings && data.standings.length > 0) {
-      cacheStandings = data.standings;
-    }
-
-    lastGroundingSyncAt = new Date().toISOString();
-    persistGroundingCache();
-
-    res.json({
-      success: true,
-      message: "Cập nhật dữ liệu từ Google Search qua Gemini thành công!",
-      lastGroundingSync: lastGroundingSyncAt,
-      data: {
-        matches: cacheMatches,
-        standings: cacheStandings,
-        news: cacheNews,
-        scorers: cacheScorers,
-      }
-    });
-  } catch (error: any) {
-    console.error("Gemini sync error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Có lỗi khi kết nối với AI Search: " + error.message,
-    });
-  }
 });
 
 // ----------------------------------------------------

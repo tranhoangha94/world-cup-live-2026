@@ -3,24 +3,19 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
-import React, { useState, useEffect } from "react";
-import { Match, MatchStatus, StandingGroup, TopScorer, Venue, NewsArticle } from "./types.js";
+import React, { useState, useEffect, useCallback } from "react";
+import { Match, StandingGroup, TopScorer, Venue, NewsArticle } from "./types.js";
 import ScoresTab from "./components/ScoresTab.js";
 import BracketTab from "./components/BracketTab.js";
 import MatchDetailTab from "./components/MatchDetailTab.js";
 import StandingsTab from "./components/StandingsTab.js";
 import NewsTab from "./components/NewsTab.js";
-import { Trophy, Clock, Wifi, Calendar, Globe, AlertTriangle } from "lucide-react";
+import { Trophy, Clock, Wifi } from "lucide-react";
 import {
-  loadClientGroundingCache,
-  saveClientGroundingCache,
-  applyClientCacheToState,
+  loadClientTournamentCache,
+  saveClientTournamentCache,
 } from "./utils/clientCache.js";
+import { applyScheduledMatchUpdates } from "./data/matchScheduler.js";
 
 type ActiveTab = "scores" | "bracket" | "standings" | "news" | "detail";
 
@@ -29,7 +24,6 @@ export default function App() {
   const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
   const [previousTab, setPreviousTab] = useState<ActiveTab>("scores");
 
-  // State caches
   const [matches, setMatches] = useState<Match[]>([]);
   const [standings, setStandings] = useState<StandingGroup[]>([]);
   const [stats, setStats] = useState<{ avgGoals: number; yellowCards: number; avgAttendance: number; topScorers: TopScorer[] }>({
@@ -42,40 +36,48 @@ export default function App() {
   const [venues, setVenues] = useState<Venue[]>([]);
 
   const [loading, setLoading] = useState(true);
-  const [syncing, setSyncing] = useState(false);
   const [time, setTime] = useState("");
-  const [lastGroundingSync, setLastGroundingSync] = useState<string | null>(null);
 
-  const persistClientCache = (
+  const persistClientCache = useCallback((
     matchesData: Match[],
     standingsData: StandingGroup[],
     newsData: NewsArticle[],
     scorersData: TopScorer[],
-    syncedAt: string | null
+    updatedAt: string | null
   ) => {
-    saveClientGroundingCache({
+    saveClientTournamentCache({
       matches: matchesData,
       standings: standingsData,
       news: newsData,
       topScorers: scorersData,
-      lastGroundingSync: syncedAt,
+      lastUpdated: updatedAt,
     });
-    if (syncedAt) setLastGroundingSync(syncedAt);
-  };
+  }, []);
 
-  // Live clock
   useEffect(() => {
     const updateClock = () => {
       const now = new Date();
       setTime(now.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit", second: "2-digit" }));
     };
     updateClock();
-    const timer = setInterval(updateClock, 1000);
-    return () => clearInterval(timer);
+    const clockTimer = setInterval(updateClock, 1000);
+    return () => clearInterval(clockTimer);
   }, []);
 
-  // Fetch initial tournament data (server cache includes persisted Grounding sync)
-  const loadData = async () => {
+  // Cập nhật trạng thái trận từ lịch đấu (không gọi API)
+  useEffect(() => {
+    const applySchedule = () => {
+      setMatches((prev) => {
+        if (prev.length === 0) return prev;
+        const { matches: next, changed } = applyScheduledMatchUpdates(prev);
+        return changed ? next : prev;
+      });
+    };
+    const scheduleTimer = setInterval(applySchedule, 60_000);
+    return () => clearInterval(scheduleTimer);
+  }, []);
+
+  const loadData = useCallback(async () => {
     try {
       setLoading(true);
       const [matchesRes, standingsRes, statsRes, newsRes, venuesRes] = await Promise.all([
@@ -86,11 +88,12 @@ export default function App() {
         fetch("/api/worldcup/venues").then((r) => r.json()),
       ]);
 
-      const matchesData = matchesRes.matches || [];
+      const rawMatches: Match[] = matchesRes.matches || [];
+      const { matches: matchesData } = applyScheduledMatchUpdates(rawMatches);
       const standingsData = standingsRes.standings || [];
       const newsData = newsRes.news || [];
       const scorersData = statsRes.topScorers || [];
-      const syncedAt = matchesRes.lastGroundingSync || statsRes.lastGroundingSync || null;
+      const updatedAt = matchesRes.lastUpdated || statsRes.lastUpdated || null;
 
       setMatches(matchesData);
       setStandings(standingsData);
@@ -98,61 +101,33 @@ export default function App() {
       setNews(newsData);
       setVenues(venuesRes.venues || []);
 
-      persistClientCache(matchesData, standingsData, newsData, scorersData, syncedAt);
+      persistClientCache(matchesData, standingsData, newsData, scorersData, updatedAt);
     } catch (error) {
       console.error("Failed to load World Cup data from server API, using local cache:", error);
-      const cached = loadClientGroundingCache();
+      const cached = loadClientTournamentCache();
       if (cached) {
-        applyClientCacheToState(cached, { setMatches, setStandings, setNews, setStats });
-        setLastGroundingSync(cached.lastGroundingSync);
+        const { matches: scheduled } = applyScheduledMatchUpdates(cached.matches || []);
+        setMatches(scheduled);
+        setStandings(cached.standings);
+        setNews(cached.news);
+        setStats((prev) => ({ ...prev, topScorers: cached.topScorers }));
       }
     } finally {
       setLoading(false);
     }
-  };
+  }, [persistClientCache]);
 
   useEffect(() => {
-    const cached = loadClientGroundingCache();
+    const cached = loadClientTournamentCache();
     if (cached) {
-      applyClientCacheToState(cached, { setMatches, setStandings, setNews, setStats });
-      setLastGroundingSync(cached.lastGroundingSync);
+      const { matches: scheduled } = applyScheduledMatchUpdates(cached.matches || []);
+      setMatches(scheduled);
+      setStandings(cached.standings);
+      setNews(cached.news);
+      setStats((prev) => ({ ...prev, topScorers: cached.topScorers }));
     }
     loadData();
-  }, []);
-
-  // Sync World Cup live stats with Google Search grounding via server
-  const handleAISync = async () => {
-    setSyncing(true);
-    try {
-      const res = await fetch("/api/worldcup/sync", { method: "POST" });
-      const result = await res.json();
-      if (!res.ok) {
-        throw new Error(result.message || "Failed to sync data with AI");
-      }
-      // Reload updated states and persist to browser cache
-      if (result.data) {
-        const matchesData = result.data.matches || matches;
-        const standingsData = result.data.standings || standings;
-        const newsData = result.data.news || news;
-        const scorersData = result.data.scorers || stats.topScorers;
-        const syncedAt = result.lastGroundingSync || new Date().toISOString();
-
-        setMatches(matchesData);
-        setStandings(standingsData);
-        setNews(newsData);
-        setStats((prev) => ({
-          ...prev,
-          topScorers: scorersData,
-        }));
-        persistClientCache(matchesData, standingsData, newsData, scorersData, syncedAt);
-      }
-    } catch (err: any) {
-      console.error(err);
-      throw err;
-    } finally {
-      setSyncing(false);
-    }
-  };
+  }, [loadData]);
 
   const handleSelectMatch = (match: Match) => {
     setPreviousTab(activeTab);
@@ -165,16 +140,16 @@ export default function App() {
     setActiveTab(previousTab);
   };
 
+  const activeMatch = selectedMatch
+    ? matches.find((m) => m.id === selectedMatch.id) ?? selectedMatch
+    : null;
+
   return (
     <div className="min-h-screen bg-background text-on-surface flex flex-col justify-between">
-      {/* Upper Glowing Cyber-Line Border */}
       <div className="h-1 bg-gradient-to-r from-[#c3f400] via-[#00eefc] to-[#c3f400] w-full"></div>
 
-      {/* Main Header & Navbar */}
       <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-white/5 py-4 px-4 sm:px-8">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-4 items-center justify-between">
-          
-          {/* Logo Brand Brand */}
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => setActiveTab("scores")}>
             <div className="w-10 h-10 rounded-xl bg-primary-container flex items-center justify-center shadow-[0_0_15px_rgba(195,244,0,0.3)]">
               <Trophy className="text-[#0b0d11] w-5 h-5" />
@@ -189,7 +164,6 @@ export default function App() {
             </div>
           </div>
 
-          {/* Tab Navigation links */}
           {activeTab !== "detail" && (
             <nav className="flex bg-surface-container-low/80 p-1 rounded-xl border border-white/5 overflow-x-auto max-w-full">
               {[
@@ -213,7 +187,6 @@ export default function App() {
             </nav>
           )}
 
-          {/* Time & Connectivity */}
           <div className="flex items-center gap-4 text-xs font-mono text-on-surface-variant">
             <div className="flex items-center gap-1.5 bg-surface-container px-3 py-1.5 rounded-lg border border-white/5">
               <Clock className="w-3.5 h-3.5 text-[#c3f400]" />
@@ -227,7 +200,6 @@ export default function App() {
         </div>
       </header>
 
-      {/* Main Content Area */}
       <main className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-8 py-8">
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20 space-y-4">
@@ -247,8 +219,6 @@ export default function App() {
                 stats={stats}
                 venues={venues}
                 onSelectMatch={handleSelectMatch}
-                onSyncWithAI={handleAISync}
-                isSyncing={syncing}
               />
             )}
 
@@ -262,24 +232,19 @@ export default function App() {
 
             {activeTab === "news" && <NewsTab news={news} venues={venues} />}
 
-            {activeTab === "detail" && selectedMatch && (
-              <MatchDetailTab match={selectedMatch} onBack={handleBackToTab} />
+            {activeTab === "detail" && activeMatch && (
+              <MatchDetailTab match={activeMatch} onBack={handleBackToTab} />
             )}
           </div>
         )}
       </main>
 
-      {/* Footer copyright */}
       <footer className="border-t border-white/5 bg-surface/50 py-6 px-4 text-center text-xs text-on-surface-variant font-body-sm">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <p>© 2026 FIFA World Cup Live Scoreboard. Powered by Gemini AI with Google Search Grounding.</p>
-          <div className="flex items-center gap-3">
-            <Globe className="w-4 h-4 text-[#c3f400]" />
-            <span className="font-label-caps text-[10px] font-bold">MÚI GIỜ: VIỆT NAM (ICT - GMT+7)</span>
-          </div>
+          <p>© 2026 FIFA World Cup Live Scoreboard. Tự động cập nhật sau mỗi trận đấu (giờ VN).</p>
+          <span className="font-label-caps text-[10px] font-bold">MÚI GIỜ: VIỆT NAM (ICT - GMT+7)</span>
         </div>
       </footer>
     </div>
   );
 }
-

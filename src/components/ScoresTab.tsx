@@ -5,7 +5,7 @@
 
 import React, { useState } from "react";
 import { Match, MatchStatus, TopScorer, Venue } from "../types.js";
-import { Search, Calendar, ChevronLeft, ChevronRight, Bell, Trophy, MapPin, RefreshCw, AlertCircle, CheckCircle2, Clock } from "lucide-react";
+import { Search, Calendar, ChevronLeft, ChevronRight, Bell, Trophy, MapPin, Clock } from "lucide-react";
 import { formatBroadcastTimeVN } from "../utils/matchTime.js";
 
 interface ScoresTabProps {
@@ -18,8 +18,6 @@ interface ScoresTabProps {
   };
   venues: Venue[];
   onSelectMatch: (match: Match) => void;
-  onSyncWithAI: () => Promise<void>;
-  isSyncing: boolean;
 }
 
 export default function ScoresTab({
@@ -27,11 +25,8 @@ export default function ScoresTab({
   stats,
   venues,
   onSelectMatch,
-  onSyncWithAI,
-  isSyncing
 }: ScoresTabProps) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [syncStatus, setSyncStatus] = useState<{ type: "success" | "error" | null; msg: string }>({ type: null, msg: "" });
 
   // Filter matches based on search
   const filteredMatches = matches.filter(
@@ -53,22 +48,10 @@ export default function ScoresTab({
 
   const spotlightVenue = venues.find((v) => v.imageUrl);
 
-  const handleSyncClick = async () => {
-    try {
-      setSyncStatus({ type: null, msg: "" });
-      await onSyncWithAI();
-      setSyncStatus({ type: "success", msg: "Đồng bộ dữ liệu World Cup qua AI Search Grounding thành công!" });
-      setTimeout(() => setSyncStatus({ type: null, msg: "" }), 5000);
-    } catch (err: any) {
-      setSyncStatus({ type: "error", msg: err.message || "Không thể đồng bộ dữ liệu" });
-    }
-  };
-
   return (
     <div className="space-y-8" id="scores-view">
-      {/* Search and AI Sync Bar */}
-      <div className="flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between bg-surface-container-low/70 backdrop-blur-md p-4 rounded-2xl border border-white/5">
-        <div className="relative flex-1">
+      <div className="bg-surface-container-low/70 backdrop-blur-md p-4 rounded-2xl border border-white/5">
+        <div className="relative">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant w-5 h-5" />
           <input
             type="text"
@@ -78,28 +61,7 @@ export default function ScoresTab({
             className="w-full pl-12 pr-4 py-3 bg-surface-container-high rounded-xl border border-white/10 focus:border-[#c3f400] focus:ring-0 text-on-surface text-sm transition-all"
           />
         </div>
-
-        <button
-          onClick={handleSyncClick}
-          disabled={isSyncing}
-          className="flex items-center justify-center gap-2 px-6 py-3 bg-primary-container text-on-primary-container font-bold rounded-xl shadow-[0_0_15px_rgba(195,244,0,0.3)] hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 transition-all cursor-pointer text-sm font-label-caps"
-        >
-          <RefreshCw className={`w-4 h-4 ${isSyncing ? "animate-spin" : ""}`} />
-          {isSyncing ? "ĐANG ĐỒNG BỘ TIN THẬT..." : "AI SEARCH GROUNDING SYNC"}
-        </button>
       </div>
-
-      {/* Sync Status Toast Notification */}
-      {syncStatus.type && (
-        <div className={`p-4 rounded-xl border flex items-center gap-3 transition-all ${
-          syncStatus.type === "success" 
-            ? "bg-primary-container/10 border-primary-fixed/30 text-[#c3f400]" 
-            : "bg-error-container/10 border-error-container/30 text-error"
-        }`}>
-          {syncStatus.type === "success" ? <CheckCircle2 className="w-5 h-5 flex-shrink-0" /> : <AlertCircle className="w-5 h-5 flex-shrink-0" />}
-          <span className="text-sm font-body-md font-semibold">{syncStatus.msg}</span>
-        </div>
-      )}
 
       {/* Main Grid Layout (8 cols Matches, 4 cols Stats/Bento) */}
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
