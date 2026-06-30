@@ -8,12 +8,15 @@ import path from "path";
 import { Match, StandingGroup, TopScorer, NewsArticle } from "../types.js";
 
 export interface TournamentCachePayload {
+  dataVersion?: number;
   matches: Match[];
   standings: StandingGroup[];
   news: NewsArticle[];
   scorers: TopScorer[];
   updatedAt: string;
 }
+
+export const TOURNAMENT_DATA_VERSION = 2;
 
 const CACHE_FILES = process.env.VERCEL
   ? [path.join("/tmp", "wc2026-tournament-cache.json")]

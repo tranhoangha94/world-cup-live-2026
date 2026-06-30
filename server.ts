@@ -9,7 +9,8 @@ import dotenv from "dotenv";
 import { Match, MatchStatus, EventType, StandingGroup, TopScorer, Venue, NewsArticle } from "./src/types.js";
 import { groupStageMatches, groupStageStandings } from "./src/data/groupStage.js";
 import { applyScheduledMatchUpdates } from "./src/data/matchScheduler.js";
-import { loadTournamentCache, saveTournamentCache } from "./src/data/tournamentCache.js";
+import { loadTournamentCache, saveTournamentCache, TOURNAMENT_DATA_VERSION } from "./src/data/tournamentCache.js";
+import { computeStandingsFromMatches } from "./src/data/standingsFromMatches.js";
 
 dotenv.config();
 
@@ -480,7 +481,9 @@ const cacheVenues: Venue[] = [
 let lastCacheUpdatedAt: string | null = null;
 
 function persistTournamentCache(): void {
+  cacheStandings = computeStandingsFromMatches(cacheMatches);
   saveTournamentCache({
+    dataVersion: TOURNAMENT_DATA_VERSION,
     matches: cacheMatches,
     standings: cacheStandings,
     news: cacheNews,
@@ -492,6 +495,7 @@ function persistTournamentCache(): void {
 function applyPersistedTournamentCache(): void {
   const persisted = loadTournamentCache();
   if (!persisted) return;
+  if (persisted.dataVersion !== TOURNAMENT_DATA_VERSION) return;
   cacheMatches = persisted.matches;
   cacheStandings = persisted.standings;
   cacheNews = persisted.news;
@@ -501,6 +505,7 @@ function applyPersistedTournamentCache(): void {
 
 function refreshScheduleAndPersist(): void {
   const { matches, changed } = applyScheduledMatchUpdates(cacheMatches);
+  cacheStandings = computeStandingsFromMatches(matches);
   if (changed) {
     cacheMatches = matches;
     lastCacheUpdatedAt = new Date().toISOString();
