@@ -179,7 +179,7 @@ const groupBMatches = buildGroup(1, "b", "Bảng B", [
 const groupCMatches = buildGroup(2, "c", "Bảng C", [
   [TEAMS.bra, TEAMS.aut, 2, 0],
   [TEAMS.ger, TEAMS.jpn, 2, 1],
-  [TEAMS.jpn, TEAMS.bra, 1, 1],
+  [TEAMS.jpn, TEAMS.bra, 1, 2],
   [TEAMS.ger, TEAMS.aut, 2, 1],
   [TEAMS.jpn, TEAMS.ger, 2, 1],
   [TEAMS.bra, TEAMS.jpn, 3, 1],
