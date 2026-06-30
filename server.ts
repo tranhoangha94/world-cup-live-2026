@@ -168,8 +168,8 @@ const knockoutMatches: Match[] = [
     awayScore: 1,
     status: MatchStatus.FINISHED,
     round: "Vòng 32",
-    date: "Thứ Hai, 30/06/2026",
-    time: "01:00",
+    date: "Hôm nay, 30/06/2026",
+    time: "00:00",
     venue: "Sân vận động NRG, Houston",
     events: [
       { minute: "29'", type: EventType.GOAL, player: "Kaishu Sano", team: "away", detail: "Sút xa đẹp mắt từ ngoài vòng cung — Nhật Bản dẫn trước" },
@@ -194,11 +194,29 @@ const knockoutMatches: Match[] = [
     id: "r32_10",
     homeTeam: { name: "Bờ Biển Ngà", code: "CIV", flagUrl: "https://flagcdn.com/w160/ci.png" },
     awayTeam: { name: "Na Uy", code: "NOR", flagUrl: "https://flagcdn.com/w160/no.png" },
-    status: MatchStatus.UPCOMING,
+    homeScore: 1,
+    awayScore: 2,
+    status: MatchStatus.FINISHED,
     round: "Vòng 32",
-    date: "Ngày mai, 01/07/2026",
-    time: "00:00",
-    venue: "Sân vận động Levi's, San Francisco"
+    date: "Hôm nay, 30/06/2026",
+    time: "22:00",
+    venue: "Sân vận động Hard Rock, Miami",
+    events: [
+      { minute: "24'", type: EventType.GOAL, player: "Erling Haaland", team: "away", detail: "Dứt điểm cận thành mở tỷ số" },
+      { minute: "58'", type: EventType.GOAL, player: "Erling Haaland", team: "away", detail: "Lập cú đúp — Na Uy dẫn 2-0" },
+      { minute: "71'", type: EventType.GOAL, player: "Simon Adingra", team: "home", detail: "Rút ngắn tỷ số cho Bờ Biển Ngà" },
+    ],
+    stats: {
+      possession: { home: 44, away: 56 },
+      shots: { home: 9, away: 14 },
+      shotsOnTarget: { home: 3, away: 7 },
+      passAccuracy: { home: 81, away: 87 }
+    },
+    lineups: [
+      { name: "Erling Haaland", position: "ST", team: "away", rating: 8.7 },
+      { name: "Simon Adingra", position: "LW", team: "home", rating: 7.4 },
+      { name: "Nicolas Pépé", position: "RW", team: "home", rating: 7.1 },
+    ]
   },
   {
     id: "r32_11",

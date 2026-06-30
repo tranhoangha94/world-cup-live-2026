@@ -6,7 +6,7 @@
 import React, { useState } from "react";
 import { Match, MatchStatus, TopScorer, Venue } from "../types.js";
 import { Search, Calendar, ChevronLeft, ChevronRight, Bell, Trophy, MapPin, Clock } from "lucide-react";
-import { formatBroadcastTimeVN } from "../utils/matchTime.js";
+import { formatBroadcastTimeVN, groupMatchesByCalendarDate } from "../utils/matchTime.js";
 
 interface ScoresTabProps {
   matches: Match[];
@@ -36,15 +36,8 @@ export default function ScoresTab({
       m.venue.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Group matches by date
-  const groupedMatches = filteredMatches.reduce((groups: { [key: string]: Match[] }, match) => {
-    const date = match.date;
-    if (!groups[date]) {
-      groups[date] = [];
-    }
-    groups[date].push(match);
-    return groups;
-  }, {});
+  // Group by ICT calendar date (dd/mm/yyyy), not raw label text
+  const dateGroups = groupMatchesByCalendarDate(filteredMatches);
 
   const spotlightVenue = venues.find((v) => v.imageUrl);
 
@@ -67,7 +60,7 @@ export default function ScoresTab({
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
         {/* Matches Schedule List (8 Columns) */}
         <div className="xl:col-span-8 space-y-8">
-          {Object.keys(groupedMatches).length === 0 ? (
+          {dateGroups.length === 0 ? (
             <div className="glass-card p-12 text-center rounded-2xl border border-white/5 space-y-4">
               <p className="text-on-surface-variant font-body-lg">Không tìm thấy trận đấu nào phù hợp.</p>
               <button onClick={() => setSearchTerm("")} className="text-[#c3f400] font-bold text-sm hover:underline">
@@ -75,13 +68,13 @@ export default function ScoresTab({
               </button>
             </div>
           ) : (
-            Object.keys(groupedMatches).map((date) => (
-              <div key={date} className="space-y-4">
+            dateGroups.map(({ key, label, matches: dayMatches }) => (
+              <div key={key} className="space-y-4">
                 {/* Date Header */}
                 <div className="flex items-center justify-between border-b border-white/10 pb-3">
                   <div className="flex items-center gap-3">
                     <Calendar className="text-[#c3f400] w-5 h-5" />
-                    <h3 className="font-headline-lg-mobile md:font-headline-lg text-primary">{date}</h3>
+                    <h3 className="font-headline-lg-mobile md:font-headline-lg text-primary">{label}</h3>
                   </div>
                   <div className="flex gap-1.5">
                     <button className="p-1.5 glass-card rounded-lg hover:bg-[#c3f400] hover:text-on-primary-fixed transition-all cursor-pointer">
@@ -95,7 +88,7 @@ export default function ScoresTab({
 
                 {/* Match Cards for this date */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {groupedMatches[date].map((match) => (
+                  {dayMatches.map((match) => (
                     <div
                       key={match.id}
                       onClick={() => onSelectMatch(match)}
