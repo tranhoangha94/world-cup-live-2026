@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Match, MatchStatus, EventType } from "../types.js";
+import { Match, MatchStatus } from "../types.js";
 import { computeStandingsFromMatches } from "./standingsFromMatches.js";
+import { enrichFinishedMatch } from "./matchEnrichment.js";
 
 type T = { name: string; code: string; label?: string };
 
@@ -114,16 +115,7 @@ function gm(
   awayScore: number
 ): Match {
   const { date, time, venue } = scheduleSlot(groupIndex, matchIndex);
-  const events: Match["events"] = [];
-  if (homeScore > 0) {
-    events.push({ minute: "34'", type: EventType.GOAL, player: home.name, team: "home", detail: "Bàn mở tỷ số" });
-  }
-  if (awayScore > 0) {
-    events.push({ minute: "61'", type: EventType.GOAL, player: away.name, team: "away", detail: "Cân bằng tỷ số hoặc ghi bàn quyết định" });
-  }
-  if (homeScore > 1) {
-    events.push({ minute: "78'", type: EventType.GOAL, player: home.name, team: "home", detail: "Chốt chấp điểm" });
-  }
+  const { events, lineups } = enrichFinishedMatch(id, home.code, away.code, homeScore, awayScore);
 
   return {
     id,
@@ -137,7 +129,8 @@ function gm(
     date,
     time,
     venue,
-    events: events.length > 0 ? events : undefined,
+    events,
+    lineups,
     stats: {
       possession: { home: 48 + (matchIndex % 12), away: 52 - (matchIndex % 12) },
       shots: { home: 8 + (matchIndex % 6), away: 7 + (matchIndex % 5) },
