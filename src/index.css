@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-display: "Space Grotesk", sans-serif;
+
+  /* Cyber dark theme palette colors conforming to user layouts */
+  --color-background: #0b0d11;
+  --color-surface: #111318;
+  --color-surface-container: #1b1e25;
+  --color-surface-container-low: #14171d;
+  --color-surface-container-high: #21252d;
+  --color-surface-container-highest: #2b303b;
+  --color-primary: #ffffff;
+  --color-on-surface: #e4e6ea;
+  --color-on-surface-variant: #9b9fa8;
+  --color-primary-container: #c3f400;
+  --color-on-primary-container: #0b0d11;
+  --color-primary-fixed: #c3f400;
+  --color-on-primary-fixed: #0b0d11;
+  --color-error: #ff5252;
+  --color-error-container: #411d1d;
+
+  /* Custom spacings */
+  --spacing-stack-sm: 8px;
+  --spacing-stack-md: 16px;
+  --spacing-stack-lg: 24px;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-on-surface);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Glassmorphism glass card style */
+.glass-card {
+  background: rgba(17, 19, 24, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card:hover {
+  background: rgba(17, 19, 24, 0.85);
+  border-color: rgba(195, 244, 0, 0.25);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+}
+
+/* Glow effects */
+.text-glow {
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+}
+
+.text-glow-green {
+  text-shadow: 0 0 15px rgba(195, 244, 0, 0.5);
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(11, 13, 17, 0.9);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 99px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #c3f400;
+}
+

@@ -1,0 +1,6 @@
+{
+  "name": "World Cup 2026 Live Scores",
+  "description": "Ứng dụng cập nhật tỷ số, lịch thi đấu, bảng đấu và chi tiết các trận đấu World Cup 2026 trực tiếp, chính xác, sử dụng dữ liệu thực tế tích hợp Gemini Search Grounding.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

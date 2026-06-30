@@ -1,0 +1,300 @@
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import React from "react";
+import { Match, MatchStatus, EventType } from "../types.js";
+import { ArrowLeft, Bell, History, Award, CheckCircle2, ChevronRight, PlayCircle, Image, Star, Eye } from "lucide-react";
+
+interface MatchDetailTabProps {
+  match: Match;
+  onBack: () => void;
+}
+
+export default function MatchDetailTab({ match, onBack }: MatchDetailTabProps) {
+  return (
+    <div className="space-y-8 max-w-4xl mx-auto" id="match-detail-view">
+      {/* Top action header */}
+      <div className="flex items-center justify-between border-b border-white/10 pb-4">
+        <button
+          onClick={onBack}
+          className="flex items-center gap-2 text-on-surface-variant hover:text-[#c3f400] transition-colors cursor-pointer font-semibold font-label-caps text-xs"
+        >
+          <ArrowLeft className="w-5 h-5" /> QUAY LẠI
+        </button>
+        <span className="font-label-caps text-xs text-on-surface-variant tracking-wider uppercase">
+          CHI TIẾT TRẬN ĐẤU
+        </span>
+        <button className="text-on-surface-variant hover:text-[#c3f400] transition-colors cursor-pointer">
+          <Bell className="w-5 h-5" />
+        </button>
+      </div>
+
+      {/* Main Big Scoreboard Hero Section */}
+      <section className="glass-card rounded-2xl p-6 md:p-8 relative overflow-hidden border border-white/10 shadow-[0_0_20px_rgba(195,244,0,0.05)] bg-gradient-to-r from-surface-container/40 to-surface-container-low/40">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#c3f400] via-[#00dbe9] to-[#c3f400] opacity-40"></div>
+
+        <div className="text-center mb-6">
+          {match.status === MatchStatus.LIVE ? (
+            <span className="bg-primary-container text-on-primary-container font-bold font-label-caps text-xs px-3 py-1 rounded-full animate-pulse shadow-[0_0_10px_rgba(195,244,0,0.4)]">
+              LIVE - {match.minute || "74'"}
+            </span>
+          ) : match.status === MatchStatus.FINISHED ? (
+            <span className="bg-white/10 text-on-surface-variant font-label-caps text-xs px-3 py-1 rounded-full border border-white/5">
+              FT - KẾT THÚC
+            </span>
+          ) : (
+            <span className="bg-[#00eefc]/10 text-[#00eefc] font-bold font-label-caps text-xs px-3 py-1 rounded-full border border-[#00eefc]/20">
+              SẮP DIỄN RA
+            </span>
+          )}
+        </div>
+
+        <div className="flex items-center justify-between gap-4">
+          {/* Home Team */}
+          <div className="flex flex-col items-center flex-1 text-center space-y-3">
+            <div className="w-16 h-16 md:w-24 md:h-24 rounded-full border-2 border-primary-fixed p-1 bg-surface-container shadow-lg flex items-center justify-center overflow-hidden">
+              <img
+                src={match.homeTeam.flagUrl}
+                alt=""
+                referrerPolicy="no-referrer"
+                className="w-full h-full object-cover rounded-full"
+              />
+            </div>
+            <div>
+              <h3 className="font-headline-lg-mobile md:font-headline-lg uppercase text-on-surface">{match.homeTeam.code}</h3>
+              <p className="text-xs text-on-surface-variant truncate max-w-[120px]">{match.homeTeam.name}</p>
+            </div>
+          </div>
+
+          {/* Scores & Period */}
+          <div className="flex flex-col items-center justify-center">
+            <div className="flex items-center gap-4">
+              <span className="font-display-lg text-[44px] md:text-[68px] text-primary">
+                {match.status !== MatchStatus.UPCOMING ? match.homeScore : "-"}
+              </span>
+              <span className="font-display-lg text-[32px] md:text-[48px] opacity-30 text-primary">:</span>
+              <span className="font-display-lg text-[44px] md:text-[68px] text-primary">
+                {match.status !== MatchStatus.UPCOMING ? match.awayScore : "-"}
+              </span>
+            </div>
+            <span className="font-label-caps text-[10px] text-on-surface-variant tracking-wider mt-1 block">
+              {match.round} {match.group ? `• ${match.group}` : ""}
+            </span>
+          </div>
+
+          {/* Away Team */}
+          <div className="flex flex-col items-center flex-1 text-center space-y-3">
+            <div className="w-16 h-16 md:w-24 md:h-24 rounded-full border-2 border-white/10 p-1 bg-surface-container shadow-lg flex items-center justify-center overflow-hidden">
+              <img
+                src={match.awayTeam.flagUrl}
+                alt=""
+                referrerPolicy="no-referrer"
+                className="w-full h-full object-cover rounded-full"
+              />
+            </div>
+            <div>
+              <h3 className="font-headline-lg-mobile md:font-headline-lg uppercase text-on-surface">{match.awayTeam.code}</h3>
+              <p className="text-xs text-on-surface-variant truncate max-w-[120px]">{match.awayTeam.name}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Small stats summary inside header */}
+        {match.stats && (
+          <div className="mt-8 pt-4 border-t border-white/5 flex justify-around text-center gap-2">
+            <div className="text-on-surface-variant font-label-caps text-[9px] md:text-[11px]">
+              KIỂM SOÁT: {match.stats.possession.home}%
+            </div>
+            <div className="text-on-surface-variant font-label-caps text-[9px] md:text-[11px]">
+              SÚT: {match.stats.shots.home} ({match.stats.shotsOnTarget.home})
+            </div>
+            <div className="text-on-surface-variant font-label-caps text-[9px] md:text-[11px]">
+              KIỂM SOÁT: {match.stats.possession.away}%
+            </div>
+          </div>
+        )}
+      </section>
+
+      {/* Two columns grid for Desktop */}
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
+        {/* Left Col: Timeline (8 cols) */}
+        <div className="md:col-span-8 space-y-8">
+          <div className="glass-card rounded-2xl p-6 border border-white/5">
+            <h3 className="font-headline-lg-mobile text-primary mb-6 flex items-center gap-3">
+              <History className="w-5 h-5 text-[#c3f400]" /> Diễn biến chính
+            </h3>
+
+            {match.events && match.events.length > 0 ? (
+              <div className="relative pl-8 border-l border-white/10 ml-3 space-y-6 pb-2">
+                {match.events.map((event, idx) => (
+                  <div key={idx} className="relative group">
+                    {/* Minute Circle Badge */}
+                    <div className="absolute -left-[45px] top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-surface-container flex items-center justify-center border border-white/10 z-10 font-label-caps text-[10px] text-[#c3f400]">
+                      {event.minute}
+                    </div>
+
+                    {/* Event Detail Card */}
+                    <div className="glass-card rounded-xl p-4 flex items-center justify-between border-l-4 border-l-[#00dbe9]">
+                      <div className="flex items-center gap-3">
+                        {event.type === EventType.GOAL ? (
+                          <span className="text-[#c3f400] text-xl font-bold font-body-lg">⚽</span>
+                        ) : event.type === EventType.YELLOW_CARD ? (
+                          <span className="text-yellow-400 text-base">🟨</span>
+                        ) : event.type === EventType.RED_CARD ? (
+                          <span className="text-red-500 text-base">🟥</span>
+                        ) : (
+                          <span className="text-[#00eefc] text-base">🔄</span>
+                        )}
+
+                        <div>
+                          <p className="font-bold text-xs text-on-surface">
+                            {event.type === EventType.SUB
+                              ? `Vào: ${event.player} (Ra: ${event.playerOut})`
+                              : event.player}
+                          </p>
+                          <p className="font-label-caps text-[8px] text-on-surface-variant uppercase">
+                            {event.team === "home" ? match.homeTeam.name : match.awayTeam.name}
+                          </p>
+                        </div>
+                      </div>
+
+                      {event.detail && (
+                        <span className="text-[10px] text-on-surface-variant font-body-md max-w-[180px] text-right italic">
+                          {event.detail}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-on-surface-variant font-body-md text-center py-6">Trận đấu chưa diễn ra hoặc chưa có diễn biến.</p>
+            )}
+          </div>
+
+          {/* Media Highlights Bento Section */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="glass-card rounded-2xl overflow-hidden group border border-white/5 cursor-pointer relative h-48">
+              <div
+                className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105 opacity-60"
+                style={{ backgroundImage: `url('https://lh3.googleusercontent.com/aida-public/AB6AXuA-0Z5Kn4EVN0mA51JSbSSXqMTg2WyNVTAqvHFWeo7ZMim6EVYlbS7Fu6uc6pNN16Fe6cEUTCFe7qEfOevCJmiTAUyiS70ZFKzjT6hAECS2Fzhbg2Bs0CqUNgFJfkCJnfYpsd4jbCbQQ9Mun9bdQePi48cONyt7CV8R1Q9lTO1l4EYHy9Ydsvxtkq476CFcbj5Omz6rLmV_FwGbvQywBmfFL2e7l5fl3NGEPjows3AGppx9V0tOqP1_B6ogDqNuzlnit5lA3Gsr2eE')` }}
+              ></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
+              <div className="absolute bottom-4 left-4 flex items-center gap-2">
+                <PlayCircle className="text-[#c3f400] w-6 h-6" />
+                <span className="font-label-caps text-xs text-primary font-bold">Highlights: Hiệp 1</span>
+              </div>
+            </div>
+
+            <div className="glass-card rounded-2xl overflow-hidden group border border-white/5 cursor-pointer relative h-48">
+              <div
+                className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105 opacity-60"
+                style={{ backgroundImage: `url('https://lh3.googleusercontent.com/aida-public/AB6AXuCtYf3lF6MJzXsz44ZVAZSpa2OlqMOdvHgBLolHQrQi15CAuGndbOelrX827zNOM2V7zOS_UibWzcusQt-m_yLP6BP2yVZ4mGM_yNNR6kFJD8xSwLnkFY1u7HwpJBE2AVcD3vZ5BS9osqjAWDHnWno-2y_SMYce4AeXvS2uyenAQ668m8Tt461-t01SJBI7cmvLwnPYfIEZ9lT5F97DSGy9IWGMg-3s4dI9XOkR9i962igM0uWVP_pKo6E7_18TtGAASw4d7TDJbZ8')` }}
+              ></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
+              <div className="absolute bottom-4 left-4 flex items-center gap-2">
+                <Image className="text-[#00eefc] w-6 h-6" />
+                <span className="font-label-caps text-xs text-primary font-bold">Bộ sưu tập ảnh trận đấu</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Col: Stats & Ratings (4 cols) */}
+        <div className="md:col-span-4 space-y-6">
+          {/* Detailed Stat Bars */}
+          {match.stats && (
+            <div className="glass-card rounded-2xl p-5 border border-white/5 space-y-5">
+              <h4 className="font-label-caps text-[11px] text-[#c3f400] tracking-wider text-center border-b border-white/5 pb-2">
+                THỐNG KÊ CHI TIẾT
+              </h4>
+
+              {/* Stat 1: Possession */}
+              <div className="space-y-1">
+                <div className="flex justify-between text-[11px] font-label-caps text-on-surface-variant">
+                  <span>{match.stats.possession.home}%</span>
+                  <span>Kiểm soát bóng</span>
+                  <span>{match.stats.possession.away}%</span>
+                </div>
+                <div className="h-1.5 w-full bg-surface-container-highest rounded-full flex overflow-hidden">
+                  <div className="h-full bg-[#c3f400]" style={{ width: `${match.stats.possession.home}%` }}></div>
+                  <div className="h-full bg-[#00dbe9]" style={{ width: `${match.stats.possession.away}%` }}></div>
+                </div>
+              </div>
+
+              {/* Stat 2: Shots */}
+              <div className="space-y-1">
+                <div className="flex justify-between text-[11px] font-label-caps text-on-surface-variant">
+                  <span>{match.stats.shots.home}</span>
+                  <span>Tổng số cú sút</span>
+                  <span>{match.stats.shots.away}</span>
+                </div>
+                <div className="h-1.5 w-full bg-surface-container-highest rounded-full flex overflow-hidden">
+                  <div className="h-full bg-[#c3f400]" style={{ width: `${(match.stats.shots.home / (match.stats.shots.home + match.stats.shots.away)) * 100}%` }}></div>
+                  <div className="h-full bg-[#00dbe9]" style={{ width: `${(match.stats.shots.away / (match.stats.shots.home + match.stats.shots.away)) * 100}%` }}></div>
+                </div>
+              </div>
+
+              {/* Stat 3: On Target */}
+              <div className="space-y-1">
+                <div className="flex justify-between text-[11px] font-label-caps text-on-surface-variant">
+                  <span>{match.stats.shotsOnTarget.home}</span>
+                  <span>Sút trúng đích</span>
+                  <span>{match.stats.shotsOnTarget.away}</span>
+                </div>
+                <div className="h-1.5 w-full bg-surface-container-highest rounded-full flex overflow-hidden">
+                  <div className="h-full bg-[#c3f400]" style={{ width: `${(match.stats.shotsOnTarget.home / (match.stats.shotsOnTarget.home + match.stats.shotsOnTarget.away)) * 100}%` }}></div>
+                  <div className="h-full bg-[#00dbe9]" style={{ width: `${(match.stats.shotsOnTarget.away / (match.stats.shotsOnTarget.home + match.stats.shotsOnTarget.away)) * 100}%` }}></div>
+                </div>
+              </div>
+
+              {/* Stat 4: Pass Acc */}
+              <div className="space-y-1">
+                <div className="flex justify-between text-[11px] font-label-caps text-on-surface-variant">
+                  <span>{match.stats.passAccuracy.home}%</span>
+                  <span>Chuyền chính xác</span>
+                  <span>{match.stats.passAccuracy.away}%</span>
+                </div>
+                <div className="h-1.5 w-full bg-surface-container-highest rounded-full flex overflow-hidden">
+                  <div className="h-full bg-[#c3f400]" style={{ width: `${match.stats.passAccuracy.home}%` }}></div>
+                  <div className="h-full bg-[#00dbe9]" style={{ width: `${match.stats.passAccuracy.away}%` }}></div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Player Lineup Rating Spotlight */}
+          {match.lineups && (
+            <div className="glass-card rounded-2xl p-5 border border-white/5 space-y-4">
+              <h4 className="font-label-caps text-[11px] text-[#00eefc] tracking-wider text-center border-b border-white/5 pb-2">
+                ĐỘI HÌNH TIÊU BIỂU
+              </h4>
+
+              <div className="space-y-2">
+                {match.lineups.map((player) => (
+                  <div
+                    key={player.name}
+                    className="flex items-center gap-3 p-2 bg-surface-container/30 hover:bg-white/5 rounded-xl transition-all cursor-pointer"
+                  >
+                    <div className="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center font-bold text-xs text-primary-fixed border border-white/10">
+                      <Star className="w-4 h-4 text-[#c3f400]" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-bold text-on-surface truncate">{player.name}</p>
+                      <p className="text-[8px] text-on-surface-variant font-label-caps">
+                        {player.position} - {player.team === "home" ? match.homeTeam.code : match.awayTeam.code}
+                      </p>
+                    </div>
+                    <span className="text-[#c3f400] font-bold font-display-lg text-xs">{player.rating}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
