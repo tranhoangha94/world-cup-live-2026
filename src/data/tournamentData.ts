@@ -71,15 +71,17 @@ export const tournamentVenues: Venue[] = [
 
 import { applyBroadcastToMatches } from "./matchBroadcast.js";
 import { applyHighlightsToMatches } from "./matchHighlights.js";
+import { applyPenaltyShootoutsToMatches } from "./penaltyShootouts.js";
 
 export function loadTournamentState() {
   const { matches } = applyScheduledMatchUpdates(baseTournamentMatches);
   const withBroadcast = applyBroadcastToMatches(matches);
   const withHighlights = applyHighlightsToMatches(withBroadcast);
+  const withPenalties = applyPenaltyShootoutsToMatches(withHighlights);
   return {
-    matches: withHighlights,
-    standings: computeStandingsFromMatches(withHighlights),
-    topScorers: computeTopScorersFromMatches(withHighlights),
+    matches: withPenalties,
+    standings: computeStandingsFromMatches(withPenalties),
+    topScorers: computeTopScorersFromMatches(withPenalties),
     news: tournamentNews,
     venues: tournamentVenues,
     stats: {

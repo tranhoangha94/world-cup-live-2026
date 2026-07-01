@@ -10,6 +10,7 @@ import { formatBroadcastTimeVN, formatMatchKickoff } from "../utils/matchTime.js
 import { parseYoutubeVideoId, youtubeEmbedUrl } from "../utils/youtubeEmbed.js";
 import { MatchHeroScore } from "./MatchPenaltyScore.js";
 import { hasPenaltyShootout } from "../utils/matchScore.js";
+import PenaltyShootoutTimeline from "./PenaltyShootoutTimeline.js";
 
 interface MatchDetailTabProps {
   match: Match;
@@ -208,6 +209,10 @@ export default function MatchDetailTab({ match, onBack }: MatchDetailTabProps) {
               <p className="text-on-surface-variant font-body-md text-center py-6">Trận đấu chưa diễn ra hoặc chưa có diễn biến.</p>
             )}
           </div>
+
+          {match.penaltyShootout && (
+            <PenaltyShootoutTimeline match={match} shootout={match.penaltyShootout} />
+          )}
 
           {(hasHighlight || hasGallery) && (
             <div className="space-y-4">

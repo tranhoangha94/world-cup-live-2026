@@ -16,6 +16,26 @@ export enum EventType {
   SUB = "SUB",
 }
 
+export type PenaltyKickOutcome = "scored" | "missed" | "saved";
+
+export interface PenaltyKick {
+  team: "home" | "away";
+  player: string;
+  outcome: PenaltyKickOutcome;
+  /** Mô tả ngắn (vd. đánh xà, đá vọt). */
+  detail?: string;
+  /** Thủ môn cản phá — khi outcome === "saved". */
+  savedBy?: string;
+  /** Quả pen quyết định chiến thắng. */
+  isDecisive?: boolean;
+}
+
+export interface PenaltyShootout {
+  homeGoalkeeper: string;
+  awayGoalkeeper: string;
+  kicks: PenaltyKick[];
+}
+
 export interface MatchEvent {
   minute: string;
   type: EventType;
@@ -58,6 +78,8 @@ export interface Match {
   awayScore?: number;
   homePens?: number;
   awayPens?: number;
+  /** Chi tiết từng quả penalty (nếu trận kết thúc bằng luân lưu). */
+  penaltyShootout?: PenaltyShootout;
   status: MatchStatus;
   round: string; // e.g. "Vòng Bảng", "Vòng 1/8", "Tứ Kết", "Bán Kết", "Chung Kết"
   group?: string; // e.g. "Bảng A"
