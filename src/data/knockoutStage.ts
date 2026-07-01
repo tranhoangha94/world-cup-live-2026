@@ -249,11 +249,31 @@ export const knockoutMatches: Match[] = [
     id: "r32_12",
     homeTeam: { name: "Anh", code: "ENG", flagUrl: "https://flagcdn.com/w160/gb-eng.png" },
     awayTeam: { name: "CHDC Congo", code: "COD", flagUrl: "https://flagcdn.com/w160/cd.png" },
-    status: MatchStatus.UPCOMING,
+    homeScore: 2,
+    awayScore: 1,
+    status: MatchStatus.FINISHED,
     round: "Vòng 32",
     date: "01/07/2026",
     time: "23:00",
-    venue: "Sân vận động Mercedes-Benz, Atlanta"
+    venue: "Sân vận động Mercedes-Benz, Atlanta",
+    events: [
+      { minute: "7'", type: EventType.GOAL, player: "Brian Cipenga", team: "away", detail: "Sút chân trái sát cột — Congo dẫn trước sớm" },
+      { minute: "19'", type: EventType.YELLOW_CARD, player: "Jude Bellingham", team: "home" },
+      { minute: "27'", type: EventType.YELLOW_CARD, player: "Noah Sadiki", team: "away" },
+      { minute: "75'", type: EventType.GOAL, player: "Harry Kane", team: "home", detail: "Đánh đầu cân bằng tỷ số (kiến tạo: Anthony Gordon)" },
+      { minute: "86'", type: EventType.GOAL, player: "Harry Kane", team: "home", detail: "Cú đúp — Anh vào vòng 16" },
+    ],
+    stats: {
+      possession: { home: 54, away: 46 },
+      shots: { home: 16, away: 7 },
+      shotsOnTarget: { home: 8, away: 2 },
+      passAccuracy: { home: 92, away: 84 },
+    },
+    lineups: [
+      { name: "Harry Kane", position: "ST", team: "home", rating: 9.0 },
+      { name: "Brian Cipenga", position: "LW", team: "away", rating: 7.6 },
+      { name: "Anthony Gordon", position: "LW", team: "home", rating: 7.8 },
+    ],
   },
   {
     id: "r32_13",
@@ -350,7 +370,7 @@ export const knockoutMatches: Match[] = [
   {
     id: "r16_6",
     homeTeam: { name: "Mexico", code: "MEX", flagUrl: "https://flagcdn.com/w160/mx.png", label: "ĐỒNG CHỦ NHÀ" },
-    awayTeam: { name: "Anh / CHDC Congo", code: "TBD", flagUrl: "https://flagcdn.com/w160/un.png" },
+    awayTeam: { name: "Anh", code: "ENG", flagUrl: "https://flagcdn.com/w160/gb-eng.png" },
     status: MatchStatus.UPCOMING,
     round: "Vòng 16",
     date: "Thứ Ba, 07/07/2026",
