@@ -14,6 +14,8 @@ import {
   resolveDefaultCalendarDate,
   sortCalendarKeysAsc,
 } from "../utils/matchTime.js";
+import { TeamMatchScore, PenaltyShootoutBadge } from "./MatchPenaltyScore.js";
+import { hasPenaltyShootout } from "../utils/matchScore.js";
 
 interface ScoresTabProps {
   matches: Match[];
@@ -176,7 +178,9 @@ export default function ScoresTab({
                             <span className="text-[10px] font-label-caps text-[#c3f400]">TRỰC TIẾP - {match.minute || "72'"}</span>
                           </div>
                         ) : match.status === MatchStatus.FINISHED ? (
-                          <span className="bg-white/10 text-on-surface-variant font-label-caps text-[9px] px-2 py-0.5 rounded-full shrink-0">KẾT THÚC (FT)</span>
+                          <span className="bg-white/10 text-on-surface-variant font-label-caps text-[9px] px-2 py-0.5 rounded-full shrink-0">
+                            KẾT THÚC{hasPenaltyShootout(match) ? " (PEN)" : " (FT)"}
+                          </span>
                         ) : (
                           <span className="text-[11px] font-label-caps text-[#00dbe9] shrink-0">SẮP DIỄN RA</span>
                         )}
@@ -199,7 +203,11 @@ export default function ScoresTab({
                             </div>
                           </div>
                           <span className="font-display-lg text-[22px] text-primary tabular-nums min-w-[1.5rem] text-right">
-                            {match.status !== MatchStatus.UPCOMING ? match.homeScore : "-"}
+                            {match.status !== MatchStatus.UPCOMING ? (
+                              <TeamMatchScore score={match.homeScore} pens={match.homePens} />
+                            ) : (
+                              "-"
+                            )}
                           </span>
                         </div>
 
@@ -219,10 +227,20 @@ export default function ScoresTab({
                             </div>
                           </div>
                           <span className="font-display-lg text-[22px] text-primary tabular-nums min-w-[1.5rem] text-right">
-                            {match.status !== MatchStatus.UPCOMING ? match.awayScore : "-"}
+                            {match.status !== MatchStatus.UPCOMING ? (
+                              <TeamMatchScore score={match.awayScore} pens={match.awayPens} />
+                            ) : (
+                              "-"
+                            )}
                           </span>
                         </div>
                       </div>
+
+                      {hasPenaltyShootout(match) && match.homePens !== undefined && match.awayPens !== undefined && (
+                        <div className="mt-2 flex justify-end">
+                          <PenaltyShootoutBadge homePens={match.homePens} awayPens={match.awayPens} />
+                        </div>
+                      )}
 
                       {match.broadcast && (
                         <div className="mt-3 flex flex-wrap items-center gap-2 text-[9px] font-label-caps">

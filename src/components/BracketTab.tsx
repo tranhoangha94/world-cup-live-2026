@@ -7,6 +7,8 @@ import React, { useState } from "react";
 import { Match, MatchStatus } from "../types.js";
 import { Award, Trophy, MapPin, Calendar, Clock, ChevronRight, LayoutGrid, Network } from "lucide-react";
 import { formatBracketKickoff, formatBroadcastTimeVN } from "../utils/matchTime.js";
+import { TeamMatchScore, PenaltyShootoutBadge } from "./MatchPenaltyScore.js";
+import { hasPenaltyShootout } from "../utils/matchScore.js";
 
 interface BracketTabProps {
   matches: Match[];
@@ -30,16 +32,7 @@ export default function BracketTab({ matches, onSelectMatch }: BracketTabProps) 
     if (match.status === MatchStatus.UPCOMING) return "-";
     const score = side === "home" ? match.homeScore : match.awayScore;
     const pens = side === "home" ? match.homePens : match.awayPens;
-    
-    if (pens !== undefined) {
-      return (
-        <span className="flex items-center gap-1 font-bold">
-          <span>{score}</span>
-          <span className="text-[10px] text-primary bg-primary/10 px-1 rounded">({pens})</span>
-        </span>
-      );
-    }
-    return score !== undefined ? score : "-";
+    return <TeamMatchScore score={score} pens={pens} className="font-bold" />;
   };
 
   // Helper to render a bracket match card
@@ -57,7 +50,7 @@ export default function BracketTab({ matches, onSelectMatch }: BracketTabProps) 
           <div className="flex justify-between items-center text-[8px] font-label-caps text-on-surface-variant border-b border-white/5 pb-1 gap-1">
             <span className="truncate">{formatBracketKickoff(match)}</span>
             {isLive && <span className="text-[#c3f400] animate-pulse shrink-0">LIVE</span>}
-            {isFinished && !isLive && <span className="text-on-surface-variant font-bold shrink-0">FT</span>}
+            {isFinished && !isLive && <span className="text-on-surface-variant font-bold shrink-0">FT{hasPenaltyShootout(match) ? " (pen)" : ""}</span>}
           </div>
           <div className="space-y-1">
             <div className="flex items-center justify-between">
@@ -75,6 +68,11 @@ export default function BracketTab({ matches, onSelectMatch }: BracketTabProps) 
               <span className="text-[10px] font-bold text-primary">{getScoreDisplay(match, "away")}</span>
             </div>
           </div>
+          {hasPenaltyShootout(match) && match.homePens !== undefined && match.awayPens !== undefined && (
+            <div className="mt-1.5 flex justify-end">
+              <PenaltyShootoutBadge homePens={match.homePens} awayPens={match.awayPens} className="text-[8px] px-2 py-0.5" />
+            </div>
+          )}
         </div>
       );
     }
@@ -97,7 +95,9 @@ export default function BracketTab({ matches, onSelectMatch }: BracketTabProps) 
           {isLive ? (
             <span className="bg-[#c3f400]/10 text-[#c3f400] font-label-caps text-[8px] px-2 py-0.5 rounded-full animate-pulse font-bold shrink-0">LIVE</span>
           ) : isFinished ? (
-            <span className="bg-white/10 text-on-surface-variant font-label-caps text-[8px] px-2 py-0.5 rounded-full shrink-0">FT</span>
+            <span className="bg-white/10 text-on-surface-variant font-label-caps text-[8px] px-2 py-0.5 rounded-full shrink-0">
+              FT{hasPenaltyShootout(match) ? " (pen)" : ""}
+            </span>
           ) : (
             <span className="text-[#00eefc] font-label-caps text-[8px] shrink-0">SẮP DIỄN RA</span>
           )}
@@ -122,6 +122,11 @@ export default function BracketTab({ matches, onSelectMatch }: BracketTabProps) 
             <span className="text-[#c3f400] font-display-lg text-sm font-bold">{getScoreDisplay(match, "away")}</span>
           </div>
         </div>
+        {hasPenaltyShootout(match) && match.homePens !== undefined && match.awayPens !== undefined && (
+          <div className="mt-2 flex justify-end">
+            <PenaltyShootoutBadge homePens={match.homePens} awayPens={match.awayPens} className="text-[8px] px-2 py-0.5" />
+          </div>
+        )}
       </div>
     );
   };

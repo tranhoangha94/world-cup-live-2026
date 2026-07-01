@@ -8,6 +8,8 @@ import { Match, MatchStatus, EventType } from "../types.js";
 import { ArrowLeft, Bell, History, PlayCircle, Image, Star, Clock, MapPin, Tv, ExternalLink } from "lucide-react";
 import { formatBroadcastTimeVN, formatMatchKickoff } from "../utils/matchTime.js";
 import { parseYoutubeVideoId, youtubeEmbedUrl } from "../utils/youtubeEmbed.js";
+import { MatchHeroScore } from "./MatchPenaltyScore.js";
+import { hasPenaltyShootout } from "../utils/matchScore.js";
 
 interface MatchDetailTabProps {
   match: Match;
@@ -48,7 +50,7 @@ export default function MatchDetailTab({ match, onBack }: MatchDetailTabProps) {
             </span>
           ) : match.status === MatchStatus.FINISHED ? (
             <span className="bg-white/10 text-on-surface-variant font-label-caps text-xs px-3 py-1 rounded-full border border-white/5">
-              FT - KẾT THÚC
+              FT{hasPenaltyShootout(match) ? " • PEN" : ""} - KẾT THÚC
             </span>
           ) : (
             <span className="bg-[#00eefc]/10 text-[#00eefc] font-bold font-label-caps text-xs px-3 py-1 rounded-full border border-[#00eefc]/20">
@@ -76,15 +78,7 @@ export default function MatchDetailTab({ match, onBack }: MatchDetailTabProps) {
 
           {/* Scores & Period */}
           <div className="flex flex-col items-center justify-center">
-            <div className="flex items-center gap-4">
-              <span className="font-display-lg text-[44px] md:text-[68px] text-primary">
-                {match.status !== MatchStatus.UPCOMING ? match.homeScore : "-"}
-              </span>
-              <span className="font-display-lg text-[32px] md:text-[48px] opacity-30 text-primary">:</span>
-              <span className="font-display-lg text-[44px] md:text-[68px] text-primary">
-                {match.status !== MatchStatus.UPCOMING ? match.awayScore : "-"}
-              </span>
-            </div>
+            <MatchHeroScore match={match} />
             <span className="font-label-caps text-[10px] text-on-surface-variant tracking-wider mt-1 block">
               {match.round} {match.group ? `• ${match.group}` : ""}
             </span>
