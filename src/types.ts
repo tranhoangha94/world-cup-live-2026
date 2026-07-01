@@ -71,6 +71,12 @@ export interface Match {
   highlightVideoUrl?: string;
   highlightThumbnailUrl?: string;
   galleryImages?: string[];
+  /** Kênh / link xem trực tiếp (chỉ trận SẮP DIỄN RA hoặc LIVE). */
+  broadcast?: {
+    channels: string[];
+    watchUrl: string;
+    watchLabel: string;
+  };
 }
 
 export interface StandingTeam {

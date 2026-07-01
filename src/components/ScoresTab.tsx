@@ -5,7 +5,7 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { Match, MatchStatus, TopScorer, Venue } from "../types.js";
-import { Search, Calendar, ChevronLeft, ChevronRight, Trophy, MapPin, Clock } from "lucide-react";
+import { Search, Calendar, ChevronLeft, ChevronRight, Trophy, MapPin, Clock, Tv } from "lucide-react";
 import {
   formatBroadcastTimeVN,
   groupMatchesByCalendarDate,
@@ -223,6 +223,24 @@ export default function ScoresTab({
                           </span>
                         </div>
                       </div>
+
+                      {match.broadcast && (
+                        <div className="mt-3 flex flex-wrap items-center gap-2 text-[9px] font-label-caps">
+                          <span className="flex items-center gap-1 text-[#00eefc]">
+                            <Tv className="w-3 h-3" />
+                            {match.broadcast.channels.join(" • ")}
+                          </span>
+                          <a
+                            href={match.broadcast.watchUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="text-[#c3f400] hover:underline"
+                          >
+                            {match.broadcast.watchLabel}
+                          </a>
+                        </div>
+                      )}
 
                       <div className="mt-5 flex justify-between items-center border-t border-white/5 pt-3 gap-2">
                         <span className="text-[10px] text-on-surface-variant font-label-caps truncate">

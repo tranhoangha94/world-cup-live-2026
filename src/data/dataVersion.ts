@@ -1,2 +1,2 @@
 /** Bump when tournament match/group data changes — invalidates browser + server cache. */
-export const TOURNAMENT_DATA_VERSION = 15;
+export const TOURNAMENT_DATA_VERSION = 16;

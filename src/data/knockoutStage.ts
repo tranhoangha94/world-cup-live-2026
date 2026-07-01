@@ -96,11 +96,29 @@ export const knockoutMatches: Match[] = [
     id: "r32_4",
     homeTeam: { name: "Pháp", code: "FRA", flagUrl: "https://flagcdn.com/w160/fr.png" },
     awayTeam: { name: "Thụy Điển", code: "SWE", flagUrl: "https://flagcdn.com/w160/se.png" },
-    status: MatchStatus.UPCOMING,
+    homeScore: 3,
+    awayScore: 0,
+    status: MatchStatus.FINISHED,
     round: "Vòng 32",
     date: "01/07/2026",
     time: "04:00",
-    venue: "Sân vận động MetLife, New York"
+    venue: "Sân vận động MetLife, New York",
+    events: [
+      { minute: "45'", type: EventType.GOAL, player: "Kylian Mbappé", team: "home", detail: "Mbappé mở tỷ số trước giờ nghỉ" },
+      { minute: "53'", type: EventType.GOAL, player: "Bradley Barcola", team: "home", detail: "Barcola nhân đôi cách biệt sau pha kiến tạo của Olise" },
+      { minute: "74'", type: EventType.GOAL, player: "Kylian Mbappé", team: "home", detail: "Mbappé lập cú đúp — Pháp vào vòng 16" },
+    ],
+    stats: {
+      possession: { home: 62, away: 38 },
+      shots: { home: 25, away: 7 },
+      shotsOnTarget: { home: 10, away: 3 },
+      passAccuracy: { home: 88, away: 79 },
+    },
+    lineups: [
+      { name: "Kylian Mbappé", position: "ST", team: "home", rating: 9.0 },
+      { name: "Michael Olise", position: "RW", team: "home", rating: 8.7 },
+      { name: "Bradley Barcola", position: "LW", team: "home", rating: 8.2 },
+    ],
   },
   {
     id: "r32_5",
@@ -204,11 +222,28 @@ export const knockoutMatches: Match[] = [
     id: "r32_11",
     homeTeam: { name: "Mexico", code: "MEX", flagUrl: "https://flagcdn.com/w160/mx.png", label: "ĐỒNG CHỦ NHÀ" },
     awayTeam: { name: "Ecuador", code: "ECU", flagUrl: "https://flagcdn.com/w160/ec.png" },
-    status: MatchStatus.UPCOMING,
+    homeScore: 2,
+    awayScore: 0,
+    status: MatchStatus.FINISHED,
     round: "Vòng 32",
     date: "01/07/2026",
     time: "08:00",
-    venue: "Sân vận động Azteca, Mexico City"
+    venue: "Sân vận động Azteca, Mexico City",
+    events: [
+      { minute: "22'", type: EventType.GOAL, player: "Julián Quiñones", team: "home", detail: "Quiñones sút xa đưa Mexico dẫn trước" },
+      { minute: "31'", type: EventType.GOAL, player: "Raúl Jiménez", team: "home", detail: "Jiménez găm thẳng góc chữ A — 2-0 sau hiệp một" },
+    ],
+    stats: {
+      possession: { home: 58, away: 42 },
+      shots: { home: 14, away: 8 },
+      shotsOnTarget: { home: 6, away: 2 },
+      passAccuracy: { home: 84, away: 80 },
+    },
+    lineups: [
+      { name: "Julián Quiñones", position: "ST", team: "home", rating: 8.5 },
+      { name: "Raúl Jiménez", position: "ST", team: "home", rating: 8.1 },
+      { name: "Roberto Alvarado", position: "RW", team: "home", rating: 7.6 },
+    ],
   },
   {
     id: "r32_12",
@@ -274,8 +309,8 @@ export const knockoutMatches: Match[] = [
   },
   {
     id: "r16_2",
-    homeTeam: { name: "Paraguay", code: "PAR", flagUrl: "https://flagcdn.com/w160/py.png" },
-    awayTeam: { name: "Pháp / Thụy Điển", code: "TBD", flagUrl: "https://flagcdn.com/w160/un.png" },
+    homeTeam: { name: "Pháp", code: "FRA", flagUrl: "https://flagcdn.com/w160/fr.png" },
+    awayTeam: { name: "Paraguay", code: "PAR", flagUrl: "https://flagcdn.com/w160/py.png" },
     status: MatchStatus.UPCOMING,
     round: "Vòng 16",
     date: "Chủ Nhật, 05/07/2026",
@@ -314,7 +349,7 @@ export const knockoutMatches: Match[] = [
   },
   {
     id: "r16_6",
-    homeTeam: { name: "Mexico / Ecuador", code: "TBD", flagUrl: "https://flagcdn.com/w160/un.png" },
+    homeTeam: { name: "Mexico", code: "MEX", flagUrl: "https://flagcdn.com/w160/mx.png", label: "ĐỒNG CHỦ NHÀ" },
     awayTeam: { name: "Anh / CHDC Congo", code: "TBD", flagUrl: "https://flagcdn.com/w160/un.png" },
     status: MatchStatus.UPCOMING,
     round: "Vòng 16",

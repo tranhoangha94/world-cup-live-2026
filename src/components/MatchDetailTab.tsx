@@ -5,7 +5,7 @@
 
 import React from "react";
 import { Match, MatchStatus, EventType } from "../types.js";
-import { ArrowLeft, Bell, History, PlayCircle, Image, Star, Clock, MapPin } from "lucide-react";
+import { ArrowLeft, Bell, History, PlayCircle, Image, Star, Clock, MapPin, Tv, ExternalLink } from "lucide-react";
 import { formatBroadcastTimeVN, formatMatchKickoff } from "../utils/matchTime.js";
 
 interface MatchDetailTabProps {
@@ -96,6 +96,24 @@ export default function MatchDetailTab({ match, onBack }: MatchDetailTabProps) {
                   <MapPin className="w-3 h-3 text-[#c3f400]" />
                   {formatMatchKickoff(match)}
                 </span>
+              </div>
+            )}
+            {match.broadcast && (
+              <div className="mt-3 w-full max-w-sm rounded-xl border border-[#00eefc]/20 bg-[#00eefc]/5 px-4 py-3 text-center">
+                <p className="flex items-center justify-center gap-1.5 font-label-caps text-[10px] text-[#00eefc] mb-2">
+                  <Tv className="w-3.5 h-3.5" />
+                  Kênh phát sóng (VN)
+                </p>
+                <p className="font-bold text-sm text-on-surface mb-2">{match.broadcast.channels.join(" • ")}</p>
+                <a
+                  href={match.broadcast.watchUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-[11px] font-label-caps text-[#c3f400] hover:underline"
+                >
+                  {match.broadcast.watchLabel}
+                  <ExternalLink className="w-3 h-3" />
+                </a>
               </div>
             )}
           </div>

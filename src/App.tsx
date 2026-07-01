@@ -15,6 +15,7 @@ import { saveClientTournamentCache, standingsFromMatches } from "./utils/clientC
 import { applyScheduledMatchUpdates } from "./data/matchScheduler.js";
 import { loadTournamentState, baseTournamentMatches } from "./data/tournamentData.js";
 import { computeTopScorersFromMatches } from "./data/topScorersFromMatches.js";
+import { applyBroadcastToMatches } from "./data/matchBroadcast.js";
 
 type ActiveTab = "scores" | "bracket" | "standings" | "news" | "detail";
 
@@ -37,11 +38,12 @@ export default function App() {
   const [time, setTime] = useState("");
 
   const applyLiveState = useCallback((nextMatches: Match[]) => {
-    setMatches(nextMatches);
-    setStandings(standingsFromMatches(nextMatches));
+    const withBroadcast = applyBroadcastToMatches(nextMatches);
+    setMatches(withBroadcast);
+    setStandings(standingsFromMatches(withBroadcast));
     setStats((prev) => ({
       ...prev,
-      topScorers: computeTopScorersFromMatches(nextMatches),
+      topScorers: computeTopScorersFromMatches(withBroadcast),
     }));
   }, []);
 
@@ -77,10 +79,12 @@ export default function App() {
         const source = prev.length > 0 ? prev : baseTournamentMatches;
         const { matches: next, changed } = applyScheduledMatchUpdates(source);
         if (changed) {
-          setStandings(standingsFromMatches(next));
-          setStats((s) => ({ ...s, topScorers: computeTopScorersFromMatches(next) }));
+          const withBroadcast = applyBroadcastToMatches(next);
+          setStandings(standingsFromMatches(withBroadcast));
+          setStats((s) => ({ ...s, topScorers: computeTopScorersFromMatches(withBroadcast) }));
+          return withBroadcast;
         }
-        return changed ? next : prev;
+        return prev;
       });
     };
     const scheduleTimer = setInterval(tick, 60_000);
