@@ -7,6 +7,7 @@ import React from "react";
 import { Match, MatchStatus, EventType } from "../types.js";
 import { ArrowLeft, Bell, History, PlayCircle, Image, Star, Clock, MapPin, Tv, ExternalLink } from "lucide-react";
 import { formatBroadcastTimeVN, formatMatchKickoff } from "../utils/matchTime.js";
+import { parseYoutubeVideoId, youtubeEmbedUrl } from "../utils/youtubeEmbed.js";
 
 interface MatchDetailTabProps {
   match: Match;
@@ -14,7 +15,8 @@ interface MatchDetailTabProps {
 }
 
 export default function MatchDetailTab({ match, onBack }: MatchDetailTabProps) {
-  const hasHighlight = Boolean(match.highlightVideoUrl);
+  const highlightVideoId = match.highlightVideoUrl ? parseYoutubeVideoId(match.highlightVideoUrl) : null;
+  const hasHighlight = Boolean(highlightVideoId);
   const hasGallery = Boolean(match.galleryImages?.length);
 
   return (
@@ -214,41 +216,60 @@ export default function MatchDetailTab({ match, onBack }: MatchDetailTabProps) {
           </div>
 
           {(hasHighlight || hasGallery) && (
-            <div className={`grid gap-4 ${hasHighlight && hasGallery ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1"}`}>
-              {hasHighlight && (
-                <a
-                  href={match.highlightVideoUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="glass-card rounded-2xl overflow-hidden group border border-white/5 cursor-pointer relative h-48 block"
-                >
-                  {match.highlightThumbnailUrl && (
-                    <div
-                      className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105 opacity-60"
-                      style={{ backgroundImage: `url('${match.highlightThumbnailUrl}')` }}
-                    />
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent" />
-                  <div className="absolute bottom-4 left-4 flex items-center gap-2">
-                    <PlayCircle className="text-[#c3f400] w-6 h-6" />
-                    <span className="font-label-caps text-xs text-primary font-bold">Video Highlights</span>
+            <div className="space-y-4">
+              {hasHighlight && highlightVideoId && (
+                <div className="glass-card rounded-2xl overflow-hidden border border-white/5">
+                  <div className="flex items-center justify-between gap-3 px-4 py-3 border-b border-white/5">
+                    <div className="flex items-center gap-2">
+                      <PlayCircle className="text-[#c3f400] w-5 h-5 shrink-0" />
+                      <span className="font-label-caps text-xs text-primary font-bold">Highlight trận đấu</span>
+                    </div>
+                    {(match.highlightSource || match.highlightDurationLabel) && (
+                      <span className="font-label-caps text-[10px] text-on-surface-variant">
+                        {[match.highlightSource, match.highlightDurationLabel].filter(Boolean).join(" • ")}
+                      </span>
+                    )}
                   </div>
-                </a>
+                  <div className="aspect-video bg-black">
+                    <iframe
+                      title={`Highlight ${match.homeTeam.code} vs ${match.awayTeam.code}`}
+                      src={youtubeEmbedUrl(highlightVideoId)}
+                      className="h-full w-full"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                      loading="lazy"
+                      referrerPolicy="strict-origin-when-cross-origin"
+                    />
+                  </div>
+                  <div className="px-4 py-2 text-right">
+                    <a
+                      href={match.highlightVideoUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-[11px] font-label-caps text-[#c3f400] hover:underline"
+                    >
+                      Mở trên YouTube
+                      <ExternalLink className="w-3 h-3" />
+                    </a>
+                  </div>
+                </div>
               )}
 
               {hasGallery && (
-                <div className="glass-card rounded-2xl overflow-hidden group border border-white/5 relative h-48">
-                  <div
-                    className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105 opacity-60"
-                    style={{ backgroundImage: `url('${match.galleryImages![0]}')` }}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent" />
-                  <div className="absolute bottom-4 left-4 flex items-center gap-2">
-                    <Image className="text-[#00eefc] w-6 h-6" />
-                    <span className="font-label-caps text-xs text-primary font-bold">
-                      Bộ sưu tập ảnh trận đấu
-                      {match.galleryImages!.length > 1 && ` (${match.galleryImages!.length})`}
-                    </span>
+                <div className={`grid gap-4 ${hasHighlight ? "grid-cols-1" : "grid-cols-1"}`}>
+                  <div className="glass-card rounded-2xl overflow-hidden group border border-white/5 relative h-48">
+                    <div
+                      className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105 opacity-60"
+                      style={{ backgroundImage: `url('${match.galleryImages![0]}')` }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent" />
+                    <div className="absolute bottom-4 left-4 flex items-center gap-2">
+                      <Image className="text-[#00eefc] w-6 h-6" />
+                      <span className="font-label-caps text-xs text-primary font-bold">
+                        Bộ sưu tập ảnh trận đấu
+                        {match.galleryImages!.length > 1 && ` (${match.galleryImages!.length})`}
+                      </span>
+                    </div>
                   </div>
                 </div>
               )}

@@ -70,14 +70,16 @@ export const tournamentVenues: Venue[] = [
 ];
 
 import { applyBroadcastToMatches } from "./matchBroadcast.js";
+import { applyHighlightsToMatches } from "./matchHighlights.js";
 
 export function loadTournamentState() {
   const { matches } = applyScheduledMatchUpdates(baseTournamentMatches);
   const withBroadcast = applyBroadcastToMatches(matches);
+  const withHighlights = applyHighlightsToMatches(withBroadcast);
   return {
-    matches: withBroadcast,
-    standings: computeStandingsFromMatches(withBroadcast),
-    topScorers: computeTopScorersFromMatches(withBroadcast),
+    matches: withHighlights,
+    standings: computeStandingsFromMatches(withHighlights),
+    topScorers: computeTopScorersFromMatches(withHighlights),
     news: tournamentNews,
     venues: tournamentVenues,
     stats: {

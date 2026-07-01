@@ -70,6 +70,10 @@ export interface Match {
   lineups?: PlayerRating[];
   highlightVideoUrl?: string;
   highlightThumbnailUrl?: string;
+  /** Nguồn clip (vd. FIFA). */
+  highlightSource?: string;
+  /** Thời lượng gần đúng (vd. "~2 phút"). */
+  highlightDurationLabel?: string;
   galleryImages?: string[];
   /** Kênh / link xem trực tiếp (chỉ trận SẮP DIỄN RA hoặc LIVE). */
   broadcast?: {
