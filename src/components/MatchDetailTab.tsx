@@ -339,11 +339,11 @@ export default function MatchDetailTab({ match, onBack }: MatchDetailTabProps) {
             </div>
           )}
 
-          {/* Player Lineup Rating Spotlight */}
+          {/* Top-rated players from the match */}
           {match.lineups && match.lineups.length > 0 && (
             <div className="glass-card rounded-2xl p-5 border border-white/5 space-y-4">
               <h4 className="font-label-caps text-[11px] text-[#00eefc] tracking-wider text-center border-b border-white/5 pb-2">
-                ĐỘI HÌNH TIÊU BIỂU
+                CẦU THỦ TIÊU BIỂU
               </h4>
 
               <div className="space-y-2">
