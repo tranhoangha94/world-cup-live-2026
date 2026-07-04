@@ -52,6 +52,25 @@ const PENALTY_SHOOTOUT_BY_MATCH_ID: Record<string, PenaltyShootout> = {
       },
     ],
   },
+  r32_15: {
+    homeGoalkeeper: "Mathew Ryan",
+    awayGoalkeeper: "Mostafa Shoubir",
+    kicks: [
+      { team: "home", player: "Harry Souttar", outcome: "missed", detail: "Sút vọt xà ngang" },
+      { team: "away", player: "Mahmoud Saber", outcome: "scored" },
+      { team: "home", player: "Jackson Irvine", outcome: "scored" },
+      { team: "away", player: "Ramy Rabia", outcome: "scored" },
+      { team: "home", player: "Awer Mabil", outcome: "scored" },
+      { team: "away", player: "Mohamed Salah", outcome: "scored", detail: "Panenka giữa khung thành" },
+      { team: "home", player: "Lucas Herrington", outcome: "missed", detail: "Đánh xà ngang" },
+      {
+        team: "away",
+        player: "Hossam Abdelmaguid",
+        outcome: "scored",
+        isDecisive: true,
+      },
+    ],
+  },
 };
 
 export function getPenaltyShootout(match: Pick<Match, "id" | "status" | "homePens" | "awayPens">): PenaltyShootout | null {
