@@ -386,8 +386,7 @@ export const knockoutMatches: Match[] = [
     awayTeam: { name: "Ghana", code: "GHA", flagUrl: "https://flagcdn.com/w160/gh.png" },
     homeScore: 1,
     awayScore: 0,
-    status: MatchStatus.LIVE,
-    minute: "64'",
+    status: MatchStatus.FINISHED,
     round: "Vòng 32",
     date: "04/07/2026",
     time: "08:30",
@@ -398,14 +397,14 @@ export const knockoutMatches: Match[] = [
     ],
     stats: {
       possession: { home: 63, away: 37 },
-      shots: { home: 9, away: 6 },
-      shotsOnTarget: { home: 5, away: 0 },
+      shots: { home: 14, away: 3 },
+      shotsOnTarget: { home: 6, away: 0 },
       passAccuracy: { home: 92, away: 82 },
     },
     lineups: [
+      { name: "Jhon Arias", position: "CM", team: "home", rating: 8.0 },
       { name: "Luis Díaz", position: "LW", team: "home", rating: 7.8 },
-      { name: "Jhon Arias", position: "CM", team: "home", rating: 7.6 },
-      { name: "Lawrence Ati Zigi", position: "GK", team: "away", rating: 7.4 },
+      { name: "Lawrence Ati Zigi", position: "GK", team: "away", rating: 7.6 },
     ],
   },
   {
@@ -472,23 +471,57 @@ export const knockoutMatches: Match[] = [
   // --- VÒNG 16 ĐỘI (ROUND OF 16) ---
   {
     id: "r16_1",
-    homeTeam: { name: "Canada", code: "CAN", flagUrl: "https://flagcdn.com/w160/ca.png" },
+    homeTeam: { name: "Canada", code: "CAN", flagUrl: "https://flagcdn.com/w160/ca.png", label: "ĐỒNG CHỦ NHÀ" },
     awayTeam: { name: "Maroc", code: "MAR", flagUrl: "https://flagcdn.com/w160/ma.png" },
-    status: MatchStatus.UPCOMING,
+    homeScore: 0,
+    awayScore: 3,
+    status: MatchStatus.FINISHED,
     round: "Vòng 16",
-    date: "Chủ Nhật, 05/07/2026",
+    date: "05/07/2026",
     time: "00:00",
-    venue: "Sân vận động MetLife, New York"
+    venue: "Sân vận động NRG, Houston",
+    events: [
+      { minute: "50'", type: EventType.GOAL, player: "Azzedine Ounahi", team: "away", detail: "Sút một chạm từ đá phạt (kiến tạo: Achraf Hakimi)" },
+      { minute: "82'", type: EventType.GOAL, player: "Azzedine Ounahi", team: "away", detail: "Cú đúp — phản công chớp nhoáng (kiến tạo: Brahim Díaz)" },
+      { minute: "90+8'", type: EventType.GOAL, player: "Soufiane Rahimi", team: "away", detail: "Chốt hạ 3–0 (kiến tạo: Brahim Díaz)" },
+    ],
+    stats: {
+      possession: { home: 45, away: 55 },
+      shots: { home: 10, away: 5 },
+      shotsOnTarget: { home: 3, away: 4 },
+      passAccuracy: { home: 76, away: 82 },
+    },
+    lineups: [
+      { name: "Azzedine Ounahi", position: "CM", team: "away", rating: 9.0 },
+      { name: "Brahim Díaz", position: "RW", team: "away", rating: 8.5 },
+      { name: "Achraf Hakimi", position: "RB", team: "away", rating: 8.0 },
+    ],
   },
   {
     id: "r16_2",
     homeTeam: { name: "Pháp", code: "FRA", flagUrl: "https://flagcdn.com/w160/fr.png" },
     awayTeam: { name: "Paraguay", code: "PAR", flagUrl: "https://flagcdn.com/w160/py.png" },
-    status: MatchStatus.UPCOMING,
+    homeScore: 1,
+    awayScore: 0,
+    status: MatchStatus.FINISHED,
     round: "Vòng 16",
-    date: "Chủ Nhật, 05/07/2026",
+    date: "05/07/2026",
     time: "04:00",
-    venue: "Sân vận động SoFi, Los Angeles"
+    venue: "Sân vận động Lincoln Financial, Philadelphia",
+    events: [
+      { minute: "70'", type: EventType.GOAL, player: "Kylian Mbappé", team: "home", detail: "Penalty sau VAR — phạm lỗi Diego Gómez với Désiré Doué" },
+    ],
+    stats: {
+      possession: { home: 68, away: 32 },
+      shots: { home: 18, away: 4 },
+      shotsOnTarget: { home: 7, away: 1 },
+      passAccuracy: { home: 90, away: 78 },
+    },
+    lineups: [
+      { name: "Kylian Mbappé", position: "ST", team: "home", rating: 8.4 },
+      { name: "Orlando Gill", position: "GK", team: "away", rating: 8.0 },
+      { name: "Désiré Doué", position: "RW", team: "home", rating: 7.6 },
+    ],
   },
   {
     id: "r16_3",
@@ -533,7 +566,7 @@ export const knockoutMatches: Match[] = [
   {
     id: "r16_7",
     homeTeam: { name: "Thụy Sĩ", code: "SUI", flagUrl: "https://flagcdn.com/w160/ch.png" },
-    awayTeam: { name: "Colombia / Ghana", code: "TBD", flagUrl: "https://flagcdn.com/w160/un.png" },
+    awayTeam: { name: "Colombia", code: "COL", flagUrl: "https://flagcdn.com/w160/co.png" },
     status: MatchStatus.UPCOMING,
     round: "Vòng 16",
     date: "Thứ Tư, 08/07/2026",
@@ -554,8 +587,8 @@ export const knockoutMatches: Match[] = [
   // --- TỨ KẾT (QUARTER-FINALS) ---
   {
     id: "qf_1",
-    homeTeam: { name: "Winner R16-1", code: "TBD", flagUrl: "https://flagcdn.com/w160/un.png" },
-    awayTeam: { name: "Winner R16-2", code: "TBD", flagUrl: "https://flagcdn.com/w160/un.png" },
+    homeTeam: { name: "Maroc", code: "MAR", flagUrl: "https://flagcdn.com/w160/ma.png" },
+    awayTeam: { name: "Pháp", code: "FRA", flagUrl: "https://flagcdn.com/w160/fr.png" },
     status: MatchStatus.UPCOMING,
     round: "Tứ Kết",
     date: "Thứ Sáu, 10/07/2026",
