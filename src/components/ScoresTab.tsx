@@ -303,7 +303,7 @@ export default function ScoresTab({
             <div className="mt-6 border-t border-white/10 pt-5">
               <h5 className="text-[10px] font-bold text-on-surface mb-3 uppercase tracking-wider">Vua phá lưới</h5>
               <div className="space-y-2.5">
-                {stats.topScorers.slice(0, 2).map((scorer) => (
+                {stats.topScorers.slice(0, 3).map((scorer) => (
                   <div key={scorer.name} className="flex items-center gap-2.5">
                     <div className="w-6 h-6 rounded bg-surface-container-highest flex items-center justify-center font-bold text-[10px] text-primary">
                       {scorer.rank}
