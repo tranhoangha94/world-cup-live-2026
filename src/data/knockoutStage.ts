@@ -529,8 +529,8 @@ export const knockoutMatches: Match[] = [
     awayTeam: { name: "Hoa Kỳ", code: "USA", flagUrl: "https://flagcdn.com/w160/us.png", label: "ĐỒNG CHỦ NHÀ" },
     status: MatchStatus.UPCOMING,
     round: "Vòng 16",
-    date: "Thứ Hai, 06/07/2026",
-    time: "03:00",
+    date: "07/07/2026",
+    time: "07:00",
     venue: "Sân vận động Lumen Field, Seattle"
   },
   {
@@ -539,9 +539,9 @@ export const knockoutMatches: Match[] = [
     awayTeam: { name: "Bồ Đào Nha", code: "POR", flagUrl: "https://flagcdn.com/w160/pt.png" },
     status: MatchStatus.UPCOMING,
     round: "Vòng 16",
-    date: "Thứ Hai, 06/07/2026",
-    time: "07:00",
-    venue: "Sân vận động Hard Rock, Miami"
+    date: "07/07/2026",
+    time: "02:00",
+    venue: "Sân vận động AT&T, Dallas"
   },
   {
     id: "r16_5",
@@ -609,7 +609,7 @@ export const knockoutMatches: Match[] = [
     awayTeam: { name: "Colombia", code: "COL", flagUrl: "https://flagcdn.com/w160/co.png" },
     status: MatchStatus.UPCOMING,
     round: "Vòng 16",
-    date: "Thứ Tư, 08/07/2026",
+    date: "08/07/2026",
     time: "03:00",
     venue: "Sân vận động BC Place, Vancouver"
   },
@@ -619,9 +619,9 @@ export const knockoutMatches: Match[] = [
     awayTeam: { name: "Argentina", code: "ARG", flagUrl: "https://flagcdn.com/w160/ar.png", label: "ĐƯƠNG KIM VÔ ĐỊCH" },
     status: MatchStatus.UPCOMING,
     round: "Vòng 16",
-    date: "Thứ Tư, 08/07/2026",
-    time: "07:00",
-    venue: "Sân vận động SoFi, Los Angeles"
+    date: "07/07/2026",
+    time: "23:00",
+    venue: "Sân vận động Mercedes-Benz, Atlanta"
   },
 
   // --- TỨ KẾT (QUARTER-FINALS) ---
