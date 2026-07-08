@@ -71,6 +71,21 @@ const PENALTY_SHOOTOUT_BY_MATCH_ID: Record<string, PenaltyShootout> = {
       },
     ],
   },
+  r16_7: {
+    homeGoalkeeper: "Gregor Kobel",
+    awayGoalkeeper: "Camilo Vargas",
+    kicks: [
+      { team: "home", player: "Granit Xhaka", outcome: "scored" },
+      { team: "away", player: "Juan Fernando Quintero", outcome: "scored" },
+      { team: "home", player: "Zeki Amdouni", outcome: "scored" },
+      { team: "away", player: "Davinson Sánchez", outcome: "missed", detail: "Đánh xà ngang" },
+      { team: "home", player: "Manuel Akanji", outcome: "missed", detail: "Sút vọt xà ngang" },
+      { team: "away", player: "Jáminton Campaz", outcome: "scored" },
+      { team: "home", player: "Cedric Itten", outcome: "scored" },
+      { team: "away", player: "Juan Camilo Hernández", outcome: "saved", savedBy: "Gregor Kobel" },
+      { team: "home", player: "Rubén Vargas", outcome: "scored", isDecisive: true },
+    ],
+  },
 };
 
 export function getPenaltyShootout(match: Pick<Match, "id" | "status" | "homePens" | "awayPens">): PenaltyShootout | null {
