@@ -777,11 +777,11 @@ export const knockoutMatches: Match[] = [
   },
   {
     id: "qf_4",
-    homeTeam: { name: "Winner R16-7", code: "TBD", flagUrl: "https://flagcdn.com/w160/un.png" },
-    awayTeam: { name: "Winner R16-8", code: "TBD", flagUrl: "https://flagcdn.com/w160/un.png" },
+    homeTeam: { name: "Thụy Sĩ", code: "SUI", flagUrl: "https://flagcdn.com/w160/ch.png" },
+    awayTeam: { name: "Argentina", code: "ARG", flagUrl: "https://flagcdn.com/w160/ar.png", label: "ĐƯƠNG KIM VÔ ĐỊCH" },
     status: MatchStatus.UPCOMING,
     round: "Tứ Kết",
-    date: "Thứ Hai, 13/07/2026",
+    date: "13/07/2026",
     time: "07:00",
     venue: "Sân vận động MetLife, New York"
   },
@@ -789,11 +789,11 @@ export const knockoutMatches: Match[] = [
   // --- BÁN KẾT (SEMI-FINALS) ---
   {
     id: "sf_1",
-    homeTeam: { name: "Winner QF1", code: "TBD", flagUrl: "https://flagcdn.com/w160/un.png" },
-    awayTeam: { name: "Winner QF2", code: "TBD", flagUrl: "https://flagcdn.com/w160/un.png" },
+    homeTeam: { name: "Pháp", code: "FRA", flagUrl: "https://flagcdn.com/w160/fr.png" },
+    awayTeam: { name: "Tây Ban Nha", code: "ESP", flagUrl: "https://flagcdn.com/w160/es.png" },
     status: MatchStatus.UPCOMING,
     round: "Bán Kết",
-    date: "Thứ Tư, 15/07/2026",
+    date: "15/07/2026",
     time: "07:00",
     venue: "Sân vận động Mercedes-Benz, Atlanta"
   },
