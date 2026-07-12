@@ -801,9 +801,9 @@ export const knockoutMatches: Match[] = [
     awayTeam: { name: "Argentina", code: "ARG", flagUrl: "https://flagcdn.com/w160/ar.png", label: "ĐƯƠNG KIM VÔ ĐỊCH" },
     status: MatchStatus.UPCOMING,
     round: "Tứ Kết",
-    date: "13/07/2026",
-    time: "07:00",
-    venue: "Sân vận động MetLife, New York"
+    date: "12/07/2026",
+    time: "08:00",
+    venue: "Sân vận động Arrowhead, Kansas City"
   },
 
   // --- BÁN KẾT (SEMI-FINALS) ---
