@@ -5,6 +5,9 @@
 
 import { Match, MatchStatus } from "../types.js";
 
+/** Max real-time window from kickoff (halftime + 90' + typical stoppage). */
+const MATCH_WINDOW_MS = 2 * 60 * 60 * 1000;
+
 /** Parse kickoff from match date (VN) + time (ICT, UTC+7). */
 export function parseKickoffICT(date: string, time: string): Date | null {
   const dateMatch = date.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
@@ -28,24 +31,29 @@ function liveMinute(kickoffMs: number, nowMs: number): string {
 }
 
 function scheduleStatus(match: Match, nowMs: number): Match | null {
+  // Manual final results in data are never overridden.
   if (match.status === MatchStatus.FINISHED) return null;
 
   const kickoff = parseKickoffICT(match.date, match.time);
   if (!kickoff) return null;
 
   const kickoffMs = kickoff.getTime();
+  const windowEndMs = kickoffMs + MATCH_WINDOW_MS;
 
-  if (nowMs >= kickoffMs) {
-    if (match.status === MatchStatus.LIVE) return null;
-    const minute = liveMinute(kickoffMs, nowMs);
-    return { ...match, status: MatchStatus.LIVE, minute };
+  if (nowMs < kickoffMs) {
+    if (match.status !== MatchStatus.UPCOMING) {
+      return { ...match, status: MatchStatus.UPCOMING, minute: undefined };
+    }
+    return null;
   }
 
-  if (match.status !== MatchStatus.UPCOMING) {
-    return { ...match, status: MatchStatus.UPCOMING, minute: undefined };
+  if (nowMs >= windowEndMs) {
+    return { ...match, status: MatchStatus.FINISHED, minute: undefined };
   }
 
-  return null;
+  const minute = liveMinute(kickoffMs, nowMs);
+  if (match.status === MatchStatus.LIVE && match.minute === minute) return null;
+  return { ...match, status: MatchStatus.LIVE, minute };
 }
 
 export function applyScheduledMatchUpdates(matches: Match[]): { matches: Match[]; changed: boolean } {
