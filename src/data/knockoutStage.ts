@@ -822,9 +822,9 @@ export const knockoutMatches: Match[] = [
     awayTeam: { name: "Tây Ban Nha", code: "ESP", flagUrl: "https://flagcdn.com/w160/es.png" },
     status: MatchStatus.UPCOMING,
     round: "Bán Kết",
-    date: "15/07/2026",
-    time: "07:00",
-    venue: "Sân vận động Mercedes-Benz, Atlanta"
+    date: "Thứ Tư, 15/07/2026",
+    time: "02:00",
+    venue: "Sân vận động AT&T, Dallas"
   },
   {
     id: "sf_2",
@@ -833,8 +833,8 @@ export const knockoutMatches: Match[] = [
     status: MatchStatus.UPCOMING,
     round: "Bán Kết",
     date: "Thứ Năm, 16/07/2026",
-    time: "07:00",
-    venue: "Sân vận động SoFi, Los Angeles"
+    time: "02:00",
+    venue: "Sân vận động Mercedes-Benz, Atlanta"
   },
 
   // --- CHUNG KẾT (FINAL) ---
@@ -844,8 +844,8 @@ export const knockoutMatches: Match[] = [
     awayTeam: { name: "Winner SF2", code: "TBD", flagUrl: "https://flagcdn.com/w160/un.png" },
     status: MatchStatus.UPCOMING,
     round: "Chung Kết",
-    date: "Chủ Nhật, 19/07/2026",
-    time: "07:00",
-    venue: "Sân vận động Azteca, Mexico City"
+    date: "Thứ Hai, 20/07/2026",
+    time: "02:00",
+    venue: "Sân vận động MetLife, New York"
   }
 ];
