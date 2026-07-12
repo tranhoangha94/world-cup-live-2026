@@ -5,8 +5,6 @@
 
 import { Match, MatchStatus } from "../types.js";
 
-const POST_MATCH_DELAY_MS = 2 * 60 * 60 * 1000;
-
 /** Parse kickoff from match date (VN) + time (ICT, UTC+7). */
 export function parseKickoffICT(date: string, time: string): Date | null {
   const dateMatch = date.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
@@ -22,8 +20,11 @@ export function parseKickoffICT(date: string, time: string): Date | null {
 function liveMinute(kickoffMs: number, nowMs: number): string {
   const elapsed = Math.floor((nowMs - kickoffMs) / 60_000);
   if (elapsed <= 0) return "1'";
-  if (elapsed > 120) return "120+'";
-  return `${elapsed}'`;
+  // Rough match clock: subtract ~15' halftime after first half.
+  const matchClock = elapsed > 45 ? elapsed - 15 : elapsed;
+  if (matchClock > 120) return "120+'";
+  if (matchClock > 90) return `${matchClock}'`;
+  return `${matchClock}'`;
 }
 
 function scheduleStatus(match: Match, nowMs: number): Match | null {
@@ -33,17 +34,10 @@ function scheduleStatus(match: Match, nowMs: number): Match | null {
   if (!kickoff) return null;
 
   const kickoffMs = kickoff.getTime();
-  const publishMs = kickoffMs + POST_MATCH_DELAY_MS;
-
-  if (nowMs >= publishMs) {
-    const hasScore = match.homeScore !== undefined || match.awayScore !== undefined;
-    if (!hasScore) return null;
-    return { ...match, status: MatchStatus.FINISHED, minute: undefined };
-  }
 
   if (nowMs >= kickoffMs) {
+    if (match.status === MatchStatus.LIVE) return null;
     const minute = liveMinute(kickoffMs, nowMs);
-    if (match.status === MatchStatus.LIVE && match.minute === minute) return null;
     return { ...match, status: MatchStatus.LIVE, minute };
   }
 

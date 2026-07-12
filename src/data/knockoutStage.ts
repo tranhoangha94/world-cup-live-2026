@@ -799,11 +799,19 @@ export const knockoutMatches: Match[] = [
     id: "qf_4",
     homeTeam: { name: "Thụy Sĩ", code: "SUI", flagUrl: "https://flagcdn.com/w160/ch.png" },
     awayTeam: { name: "Argentina", code: "ARG", flagUrl: "https://flagcdn.com/w160/ar.png", label: "ĐƯƠNG KIM VÔ ĐỊCH" },
-    status: MatchStatus.UPCOMING,
+    homeScore: 1,
+    awayScore: 1,
+    status: MatchStatus.LIVE,
+    minute: "106'",
     round: "Tứ Kết",
     date: "12/07/2026",
     time: "08:00",
-    venue: "Sân vận động Arrowhead, Kansas City"
+    venue: "Sân vận động Arrowhead, Kansas City",
+    events: [
+      { minute: "10'", type: EventType.GOAL, player: "Alexis Mac Allister", team: "away", detail: "Đánh đầu mở tỷ số (kiến tạo: Lionel Messi)" },
+      { minute: "67'", type: EventType.GOAL, player: "Dan Ndoye", team: "home", detail: "Sút cận thành — Thụy Sĩ gỡ hòa" },
+      { minute: "72'", type: EventType.RED_CARD, player: "Breel Embolo", team: "home", detail: "Thẻ đỏ sau VAR — Thụy Sĩ chơi thiếu người" },
+    ],
   },
 
   // --- BÁN KẾT (SEMI-FINALS) ---
