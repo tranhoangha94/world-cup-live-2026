@@ -820,11 +820,17 @@ export const knockoutMatches: Match[] = [
     id: "sf_1",
     homeTeam: { name: "Pháp", code: "FRA", flagUrl: "https://flagcdn.com/w160/fr.png" },
     awayTeam: { name: "Tây Ban Nha", code: "ESP", flagUrl: "https://flagcdn.com/w160/es.png" },
-    status: MatchStatus.UPCOMING,
+    homeScore: 0,
+    awayScore: 2,
+    status: MatchStatus.FINISHED,
     round: "Bán Kết",
     date: "Thứ Tư, 15/07/2026",
     time: "02:00",
-    venue: "Sân vận động AT&T, Dallas"
+    venue: "Sân vận động AT&T, Dallas",
+    events: [
+      { minute: "22'", type: EventType.GOAL, player: "Mikel Oyarzabal", team: "away", detail: "Penalty — Digne phạm lỗi Yamal" },
+      { minute: "58'", type: EventType.GOAL, player: "Pedro Porro", team: "away", detail: "Một-hai với Dani Olmo — Tây Ban Nha dẫn 2–0" },
+    ],
   },
   {
     id: "sf_2",
@@ -840,7 +846,7 @@ export const knockoutMatches: Match[] = [
   // --- CHUNG KẾT (FINAL) ---
   {
     id: "final",
-    homeTeam: { name: "Winner SF1", code: "TBD", flagUrl: "https://flagcdn.com/w160/un.png" },
+    homeTeam: { name: "Tây Ban Nha", code: "ESP", flagUrl: "https://flagcdn.com/w160/es.png" },
     awayTeam: { name: "Winner SF2", code: "TBD", flagUrl: "https://flagcdn.com/w160/un.png" },
     status: MatchStatus.UPCOMING,
     round: "Chung Kết",
