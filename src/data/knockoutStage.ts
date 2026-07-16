@@ -836,18 +836,25 @@ export const knockoutMatches: Match[] = [
     id: "sf_2",
     homeTeam: { name: "Anh", code: "ENG", flagUrl: "https://flagcdn.com/w160/gb-eng.png" },
     awayTeam: { name: "Argentina", code: "ARG", flagUrl: "https://flagcdn.com/w160/ar.png", label: "ĐƯƠNG KIM VÔ ĐỊCH" },
-    status: MatchStatus.UPCOMING,
+    homeScore: 1,
+    awayScore: 2,
+    status: MatchStatus.FINISHED,
     round: "Bán Kết",
     date: "Thứ Năm, 16/07/2026",
     time: "02:00",
-    venue: "Sân vận động Mercedes-Benz, Atlanta"
+    venue: "Sân vận động Mercedes-Benz, Atlanta",
+    events: [
+      { minute: "55'", type: EventType.GOAL, player: "Anthony Gordon", team: "home", detail: "Dứt điểm cận thành (kiến tạo: Morgan Rogers)" },
+      { minute: "85'", type: EventType.GOAL, player: "Enzo Fernández", team: "away", detail: "Sút xa gỡ hòa (kiến tạo: Lionel Messi)" },
+      { minute: "90+2'", type: EventType.GOAL, player: "Lautaro Martínez", team: "away", detail: "Đánh đầu quyết định (kiến tạo: Lionel Messi)" },
+    ],
   },
 
   // --- CHUNG KẾT (FINAL) ---
   {
     id: "final",
     homeTeam: { name: "Tây Ban Nha", code: "ESP", flagUrl: "https://flagcdn.com/w160/es.png" },
-    awayTeam: { name: "Winner SF2", code: "TBD", flagUrl: "https://flagcdn.com/w160/un.png" },
+    awayTeam: { name: "Argentina", code: "ARG", flagUrl: "https://flagcdn.com/w160/ar.png", label: "ĐƯƠNG KIM VÔ ĐỊCH" },
     status: MatchStatus.UPCOMING,
     round: "Chung Kết",
     date: "Thứ Hai, 20/07/2026",
