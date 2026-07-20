@@ -850,15 +850,47 @@ export const knockoutMatches: Match[] = [
     ],
   },
 
+  // --- TRANH HẠNG 3 ---
+  {
+    id: "third",
+    homeTeam: { name: "Pháp", code: "FRA", flagUrl: "https://flagcdn.com/w160/fr.png" },
+    awayTeam: { name: "Anh", code: "ENG", flagUrl: "https://flagcdn.com/w160/gb-eng.png" },
+    homeScore: 4,
+    awayScore: 6,
+    status: MatchStatus.FINISHED,
+    round: "Tranh Hạng 3",
+    date: "Chủ Nhật, 19/07/2026",
+    time: "04:00",
+    venue: "Sân vận động Hard Rock, Miami",
+    events: [
+      { minute: "3'", type: EventType.GOAL, player: "Declan Rice", team: "away", detail: "Sút xa mở tỷ số sau pha mất bóng của Pháp" },
+      { minute: "18'", type: EventType.GOAL, player: "Ezri Konsa", team: "away", detail: "Đánh đầu từ phạt góc của Declan Rice" },
+      { minute: "37'", type: EventType.GOAL, player: "Bukayo Saka", team: "away", detail: "Đệm bóng sau pha dứt điểm của Marcus Rashford" },
+      { minute: "45+2'", type: EventType.GOAL, player: "Bukayo Saka", team: "away", detail: "Dứt điểm góc gần (kiến tạo: Eberechi Eze) — Anh dẫn 4–0" },
+      { minute: "48'", type: EventType.GOAL, player: "Kylian Mbappé", team: "home", detail: "Dứt điểm chân trái (kiến tạo: Michael Olise)" },
+      { minute: "54'", type: EventType.GOAL, player: "Bradley Barcola", team: "home", detail: "Sút gần cột (kiến tạo: Kylian Mbappé)" },
+      { minute: "66'", type: EventType.GOAL, player: "Kylian Mbappé", team: "home", detail: "Một-hai với Olise — Mbappé trở thành vua phá lưới World Cup mọi thời đại" },
+      { minute: "87'", type: EventType.GOAL, player: "Bukayo Saka", team: "away", detail: "Penalty — Gusto phạm lỗi Djed Spence; hat-trick của Saka" },
+      { minute: "90+6'", type: EventType.GOAL, player: "Ousmane Dembélé", team: "home", detail: "Cú cắt vào trong chân trái — Pháp rút còn 1 bàn" },
+      { minute: "90+8'", type: EventType.GOAL, player: "Jude Bellingham", team: "away", detail: "Solo vào vòng cấm chốt hạ — Anh hạng 3" },
+    ],
+  },
+
   // --- CHUNG KẾT (FINAL) ---
   {
     id: "final",
     homeTeam: { name: "Tây Ban Nha", code: "ESP", flagUrl: "https://flagcdn.com/w160/es.png" },
     awayTeam: { name: "Argentina", code: "ARG", flagUrl: "https://flagcdn.com/w160/ar.png", label: "ĐƯƠNG KIM VÔ ĐỊCH" },
-    status: MatchStatus.UPCOMING,
+    homeScore: 1,
+    awayScore: 0,
+    status: MatchStatus.FINISHED,
     round: "Chung Kết",
     date: "Thứ Hai, 20/07/2026",
     time: "02:00",
-    venue: "Sân vận động MetLife, New York"
+    venue: "Sân vận động MetLife, New York",
+    events: [
+      { minute: "90+3'", type: EventType.RED_CARD, player: "Enzo Fernández", team: "away", detail: "Thẻ vàng thứ hai — phạm lỗi Pau Cubarsí; Argentina chơi thiếu người" },
+      { minute: "106'", type: EventType.GOAL, player: "Ferran Torres", team: "home", detail: "Volley cận thành sau pha đánh đầu của Nico Williams (kiến tạo: Pedro Porro) — Tây Ban Nha vô địch" },
+    ],
   }
 ];

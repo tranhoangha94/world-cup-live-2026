@@ -25,6 +25,7 @@ export default function BracketTab({ matches, onSelectMatch }: BracketTabProps) 
   const r16Matches = matches.filter((m) => m.id.startsWith("r16_"));
   const qfMatches = matches.filter((m) => m.id.startsWith("qf_"));
   const sfMatches = matches.filter((m) => m.id.startsWith("sf_"));
+  const thirdMatch = matches.find((m) => m.id === "third");
   const finalMatch = matches.find((m) => m.id === "final");
 
   // Helper to get score display
@@ -326,6 +327,16 @@ export default function BracketTab({ matches, onSelectMatch }: BracketTabProps) 
               {sfMatches.map((m) => renderBracketCard(m))}
             </div>
           </div>
+
+          {/* Tranh Hạng 3 */}
+          {thirdMatch && (
+            <div className="space-y-4">
+              <h3 className="font-label-caps text-xs text-on-surface-variant border-l-2 border-white/40 pl-2 font-bold tracking-wider uppercase">Tranh Hạng 3</h3>
+              <div className="max-w-md">
+                {renderBracketCard(thirdMatch)}
+              </div>
+            </div>
+          )}
 
           {/* Chung Kết Section */}
           <div className="space-y-4">
